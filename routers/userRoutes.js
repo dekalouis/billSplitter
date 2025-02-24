@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
+const authentication = require("../middlewares/authentication");
 
 // buat register
 router.post("/register", userController.register);
@@ -9,7 +10,7 @@ router.post("/register", userController.register);
 // loginr
 router.post("/login", userController.login);
 
-// // getuser?
-// router.get("/:id", userController.getUserById);
+// getuser?
+router.get("/:id", authentication, userController.getUserById);
 
 module.exports = router;

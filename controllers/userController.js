@@ -54,5 +54,35 @@ class UserController {
       next(err);
     }
   }
+
+  static async getUserById(req, res, next) {
+    try {
+      const userId = req.params.id;
+
+      if (req.user.id !== parseInt(userId)) {
+        next({
+          name: "Forbidden",
+          message: "You cannot access other user's data",
+        });
+        return;
+      }
+
+      const user = await User.findByPk(userId, {
+        attributes: {
+          exclude: ["password"],
+        },
+      });
+      if (!user) {
+        next({
+          name: "NotFound",
+          message: "User not found",
+        });
+        return;
+      }
+      res.status(200).json(user);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 module.exports = UserController;

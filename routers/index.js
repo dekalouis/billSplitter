@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const userRoutes = require("./userRoutes");
-// const billRoutes = require("./billRoutes");
+const billRoutes = require("./billRoutes");
 // const itemRoutes = require("./itemRoutes");
 // const participantRoutes = require("./participantRoutes");
 // const allocationRoutes = require("./allocationRoutes");
@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
 });
 
 router.use("/users", userRoutes);
-// router.use("/bills", billRoutes);
+router.use("/bills", billRoutes);
 // router.use("/items", itemRoutes);
 // router.use("/participants", participantRoutes);
 // router.use("/allocations", allocationRoutes);
