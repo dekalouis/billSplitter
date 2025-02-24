@@ -6,8 +6,8 @@ const userController = require("../controllers/userController");
 // buat register
 router.post("/register", userController.register);
 
-// // loginr
-// router.post("/login", userController.loginUser);
+// loginr
+router.post("/login", userController.login);
 
 // // getuser?
 // router.get("/:id", userController.getUserById);
