@@ -23,12 +23,12 @@ module.exports = (sequelize, DataTypes) => {
           isUrl: {
             msg: "Must be a valid URL",
           },
-          notEmpty: {
-            msg: "URL cannot be empty",
-          },
-          notNull: {
-            msg: "URL cannot be empty",
-          },
+          // notEmpty: {
+          //   msg: "URL cannot be empty",
+          // },
+          // notNull: {
+          //   msg: "URL cannot be empty",
+          // },
         },
       },
       vatRate: {

@@ -10,6 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       allocatedQuantity: {
+        allowNull: false,
         type: Sequelize.DECIMAL,
       },
       ItemId: {
