@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --detectOpenHandles --forceExit --verbose --silent",
+    "test": "NODE_ENV=test jest --detectOpenHandles --forceExit --verbose ",
     "dev": "npx nodemon app"
   },
   "repository": {

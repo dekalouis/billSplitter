@@ -17,8 +17,9 @@ app.use(express.json());
 app.use(routes);
 
 //commented while testing
-app.listen(port, () => {
-  console.log(`Example app listening on port http://localhost:${port}`);
-});
-
+if (process.env.NODE_ENV !== "test") {
+  app.listen(port, () => {
+    console.log(`Example app listening on port http://localhost:${port}`);
+  });
+}
 module.exports = app;
