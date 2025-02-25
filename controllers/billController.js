@@ -1,7 +1,6 @@
 const { Bill } = require("../models");
 const imagekit = require("../helpers/imagekit");
-const OpenAI = require("openai");
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = require("../helpers/openAi");
 
 class BillController {
   //!! UPLOAD IMAGE
