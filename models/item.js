@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 1,
         validate: {
           min: {
-            args: 1,
+            args: [1],
             msg: "Quantity cannot be less than 1",
           },
           isInt: {
@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           min: {
-            args: 0,
+            args: [0],
             msg: "Price cannot be negative",
           },
           isInt: {

@@ -83,7 +83,7 @@ class BillController {
       );
 
       if (!updated) {
-        next({ name: "NotFound", message: "Bill unchanged!" });
+        next({ name: "NotFound", message: "Bill not found" });
         return;
       }
 

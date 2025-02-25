@@ -1,23 +1,23 @@
 const express = require("express");
 const router = express.Router();
 
-const billController = require("../controllers/billController");
+const BillController = require("../controllers/billController");
 const authentication = require("../middlewares/authentication");
 
 router.use(authentication);
 //buat bill baru
-router.post("/add-bill", billController.createBill);
+router.post("/add-bill", BillController.createBill);
 
 //check semua bill
-router.get("/user/:userId", billController.getBillsByUser);
+router.get("/user/:userId", BillController.getBillsByUser);
 
 //check bill dari id
-router.get("/:id", billController.getBillById);
+router.get("/:id", BillController.getBillById);
 
 //update bill
-router.put("/:id", billController.updateBill);
+router.put("/:id", BillController.updateBill);
 
 //delete bill
-router.delete("/:id", billController.deleteBill);
+router.delete("/:id", BillController.deleteBill);
 
 module.exports = router;
