@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 1.0,
         validate: {
           min: {
-            args: 0.01,
+            args: [0.01],
             msg: "allocatedQuantity must be at least 0.01",
           },
           isDecimal: {

@@ -1,8 +1,45 @@
 const { Bill } = require("../models");
-// const bcrypt = require("bcrypt");
-// const jwt = require("jsonwebtoken");
+const imagekit = require("../helpers/imagekit");
 
 class BillController {
+  //!! UPLOAD IMAGE
+  static async uploadBillImage(req, res, next) {
+    try {
+      if (!req.file) {
+        return next({
+          name: "BadRequest",
+          message: "No file uploaded",
+        });
+      }
+
+      const fileBuffer = req.file.buffer;
+      const fileName = req.file.originalname;
+
+      // upload imageKit
+      const response = await imagekit.upload({
+        file: fileBuffer,
+        fileName: fileName,
+        folder: "/bill-uploads",
+      });
+      // buat kalo storing billIDnya
+      // const userId = req.user.id;
+      // let updatedBill = await Bill.update(
+      //   { billImageUrl: response.url },
+      //   { where: { id: BillId, createdBy: userId } }
+      // );
+
+      // Or just return the URL to the client:
+      return res.status(200).json({
+        message: "File uploaded successfully",
+        imageUrl: response.url,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  //!! UPLOAD IMAGE
+
   static async createBill(req, res, next) {
     try {
       const userId = req.user.id;
@@ -36,9 +73,10 @@ class BillController {
   static async getBillsByUser(req, res, next) {
     try {
       //   return res.json("logging for getBillsByUser");
-      const authenticatedUserId = req.user.id;
       const { userId } = req.params;
 
+      //authorization terpisah
+      const authenticatedUserId = req.user.id;
       if (authenticatedUserId !== parseInt(userId, 10)) {
         next({
           name: "Forbidden",
@@ -46,6 +84,7 @@ class BillController {
         });
         return;
       }
+      //authorization terpisah
 
       const bills = await Bill.findAll({
         where: { createdBy: userId },

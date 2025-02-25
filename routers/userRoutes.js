@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const UserController = require("../controllers/userController");
 const authentication = require("../middlewares/authentication");
+const authorization = require("../middlewares/authorization");
 
 // buat register
 router.post("/register", UserController.register);

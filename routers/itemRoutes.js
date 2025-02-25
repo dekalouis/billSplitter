@@ -4,6 +4,8 @@ const ItemController = require("../controllers/itemController");
 
 const authentication = require("../middlewares/authentication");
 
+const { authorizeItem } = require("../middlewares/authorization");
+
 router.use(authentication);
 //buat item baru
 router.post("/", ItemController.createItem);
@@ -12,9 +14,9 @@ router.post("/", ItemController.createItem);
 router.get("/bill/:billId", ItemController.getItemsByBill);
 
 //update item
-router.put("/:id", ItemController.updateItem);
+router.put("/:id", authorizeItem, ItemController.updateItem);
 
 //delete bill
-router.delete("/:id", ItemController.deleteItem);
+router.delete("/:id", authorizeItem, ItemController.deleteItem);
 
 module.exports = router;

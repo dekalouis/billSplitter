@@ -5,13 +5,29 @@ class AllocationController {
     try {
       const { allocatedQuantity, ParticipantId, ItemId } = req.body;
       //   console.log(` LOGNYAAA =====`, allocatedQuantity, ParticipantId, ItemId);
-      if (!allocatedQuantity || !ParticipantId || !ItemId) {
-        next({
-          name: "BadRequest",
-          message: "Invalid allocation data",
-        });
+      // if (!allocatedQuantity || !ParticipantId || !ItemId) {
+      //   next({
+      //     name: "BadRequest",
+      //     message: "Invalid allocation data",
+      //   });
+      //   return;
+      // }
+
+      //validasi
+      const item = await Item.findOne({ where: { id: ItemId } });
+      if (!item) {
+        next({ name: "NotFound", message: "Item not found" });
         return;
       }
+      const participant = await Participant.findOne({
+        where: { id: ParticipantId },
+      });
+      if (!participant) {
+        next({ name: "NotFound", message: "Participant not found" });
+        return;
+      }
+      //validasi
+
       const allocation = await ItemAllocation.create({
         allocatedQuantity,
         ParticipantId,

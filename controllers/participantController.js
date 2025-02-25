@@ -15,13 +15,13 @@ class ParticipantController {
   static async getParticipantsByBill(req, res, next) {
     try {
       const { billId } = req.params;
-      const userId = req.user.id;
 
-      //   console.log(`ID billnya`, billId, `ID user`, userId);
+      //authorization terpisah
+      const userId = req.user.id;
+      console.log(`ID billnya`, billId, `ID user`, userId);
       const bill = await Bill.findOne({
         where: { id: billId, createdBy: userId },
       });
-
       if (!bill) {
         next({
           name: "Forbidden",
@@ -29,6 +29,7 @@ class ParticipantController {
         });
         return;
       }
+      //authorization terpisah
 
       const participants = await Participant.findAll({
         where: { BillId: billId },
@@ -48,24 +49,24 @@ class ParticipantController {
     try {
       const { id } = req.params;
       const { name } = req.body;
-      const userId = req.user.id;
+      //   const userId = req.user.id;
 
-      const participant = await Participant.findOne({ where: { id } });
-      if (!participant) {
-        next({ name: "NotFound", message: "Participant not found" });
-        return;
-      }
+      //   const participant = await Participant.findOne({ where: { id } });
+      //   if (!participant) {
+      //     next({ name: "NotFound", message: "Participant not found" });
+      //     return;
+      //   }
 
-      const bill = await Bill.findOne({
-        where: { id: participant.BillId, createdBy: userId },
-      });
-      if (!bill) {
-        next({
-          name: "Forbidden",
-          message: "You cannot update participants in other user's bills",
-        });
-        return;
-      }
+      //   const bill = await Bill.findOne({
+      //     where: { id: participant.BillId, createdBy: userId },
+      //   });
+      //   if (!bill) {
+      //     next({
+      //       name: "Forbidden",
+      //       message: "You cannot update participants in other user's bills",
+      //     });
+      //     return;
+      //   }
       const [updated] = await Participant.update({ name }, { where: { id } });
       if (!id) {
         next({ name: "NotFound", message: "Participant not found" });
@@ -83,24 +84,24 @@ class ParticipantController {
   static async deleteParticipant(req, res, next) {
     try {
       const { id } = req.params;
-      const userId = req.user.id;
+      //   const userId = req.user.id;
 
-      const participant = await Participant.findOne({ where: { id } });
-      if (!participant) {
-        next({ name: "NotFound", message: "Participant not found" });
-        return;
-      }
+      //   const participant = await Participant.findOne({ where: { id } });
+      //   if (!participant) {
+      //     next({ name: "NotFound", message: "Participant not found" });
+      //     return;
+      //   }
 
-      const bill = await Bill.findOne({
-        where: { id: participant.BillId, createdBy: userId },
-      });
-      if (!bill) {
-        next({
-          name: "Forbidden",
-          message: "You cannot delete participants in other user's bills",
-        });
-        return;
-      }
+      //   const bill = await Bill.findOne({
+      //     where: { id: participant.BillId, createdBy: userId },
+      //   });
+      //   if (!bill) {
+      //     next({
+      //       name: "Forbidden",
+      //       message: "You cannot delete participants in other user's bills",
+      //     });
+      //     return;
+      //   }
 
       const deleted = await Participant.destroy({ where: { id } });
       if (!deleted) {

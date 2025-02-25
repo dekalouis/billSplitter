@@ -4,6 +4,8 @@ const ParticipantController = require("../controllers/participantController");
 
 const authentication = require("../middlewares/authentication");
 
+const { authorizeParticipant } = require("../middlewares/authorization");
+
 router.use(authentication);
 // create participant
 router.post("/", ParticipantController.createParticipant);
@@ -12,9 +14,17 @@ router.post("/", ParticipantController.createParticipant);
 router.get("/bill/:billId", ParticipantController.getParticipantsByBill);
 
 // update participant
-router.put("/:id", ParticipantController.updateParticipant);
+router.put(
+  "/:id",
+  authorizeParticipant,
+  ParticipantController.updateParticipant
+);
 
 // delete participant
-router.delete("/:id", ParticipantController.deleteParticipant);
+router.delete(
+  "/:id",
+  authorizeParticipant,
+  ParticipantController.deleteParticipant
+);
 
 module.exports = router;

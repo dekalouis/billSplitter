@@ -13,8 +13,9 @@ class ItemController {
   static async getItemsByBill(req, res, next) {
     try {
       const { billId } = req.params;
-      const userId = req.user.id;
 
+      //authorization terpisah
+      const userId = req.user.id;
       const bill = await Bill.findOne({
         where: { id: billId, createdBy: userId },
       });
@@ -25,6 +26,7 @@ class ItemController {
         });
         return;
       }
+      //authorization terpisah
 
       const items = await Item.findAll({ where: { BillId: billId } });
 
@@ -42,7 +44,7 @@ class ItemController {
     try {
       const { id } = req.params;
       const { name, quantity, price } = req.body;
-      const userId = req.user.id;
+      //   const userId = req.user.id;
 
       const item = await Item.findOne({ where: { id } });
       if (!item) {
@@ -51,16 +53,16 @@ class ItemController {
       }
 
       //CHECK BILLNYA PUNYA SIAPA
-      const bill = await Bill.findOne({
-        where: { id: item.BillId, createdBy: userId },
-      });
-      if (!bill) {
-        next({
-          name: "Forbidden",
-          message: "You cannot update items in other user's bills",
-        });
-        return;
-      }
+      //   const bill = await Bill.findOne({
+      //     where: { id: item.BillId, createdBy: userId },
+      //   });
+      //   if (!bill) {
+      //     next({
+      //       name: "Forbidden",
+      //       message: "You cannot update items in other user's bills",
+      //     });
+      //     return;
+      //   }
 
       const [updated] = await Item.update(
         { name, quantity, price },
@@ -82,7 +84,7 @@ class ItemController {
   static async deleteItem(req, res, next) {
     try {
       const { id } = req.params;
-      const userId = req.user.id;
+      //   const userId = req.user.id;
 
       const item = await Item.findOne({ where: { id } });
       if (!item) {
@@ -90,19 +92,19 @@ class ItemController {
         return;
       }
 
-      //CHECK BILLNYA PUNYA SIAPA
-      const bill = await Bill.findOne({
-        where: { id: item.BillId, createdBy: userId },
-      });
-      if (!bill) {
-        next({
-          name: "Forbidden",
-          message: "You cannot delete items in other user's bills",
-        });
-        return;
-      }
+      //   //CHECK BILLNYA PUNYA SIAPA
+      //   const bill = await Bill.findOne({
+      //     where: { id: item.BillId, createdBy: userId },
+      //   });
+      //   if (!bill) {
+      //     next({
+      //       name: "Forbidden",
+      //       message: "You cannot delete items in other user's bills",
+      //     });
+      //     return;
+      //   }
 
-      console.log(`BillNYAA: ${JSON.stringify(bill)}, UserIdNYAA: ${userId}`);
+      //   console.log(`BillNYAA: ${JSON.stringify(bill)}, UserIdNYAA: ${userId}`);
 
       const deleted = await Item.destroy({ where: { id } });
       if (!deleted) {
