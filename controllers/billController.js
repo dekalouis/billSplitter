@@ -1,5 +1,7 @@
 const { Bill } = require("../models");
 const imagekit = require("../helpers/imagekit");
+const OpenAI = require("openai");
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 class BillController {
   //!! UPLOAD IMAGE
@@ -16,11 +18,16 @@ class BillController {
       const fileName = req.file.originalname;
 
       // upload imageKit
-      const response = await imagekit.upload({
+      const photoResponse = await imagekit.upload({
         file: fileBuffer,
         fileName: fileName,
         folder: "/bill-uploads",
       });
+      /*{
+    "message": "File uploaded successfully",
+    "imageUrl": "https://ik.imagekit.io/bezitoz/bill-uploads/food2_Nj3QHcA6b.jpg"
+    }*/
+
       // buat kalo storing billIDnya
       // const userId = req.user.id;
       // let updatedBill = await Bill.update(
@@ -28,10 +35,68 @@ class BillController {
       //   { where: { id: BillId, createdBy: userId } }
       // );
 
-      // Or just return the URL to the client:
+      //OPENAI
+      const gptResponse = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: `You are provided with a photo of a restaurant bill. 
+Return a strictly valid JSON object *without any line breaks*, code blocks, or extra commentary. 
+The JSON should have this structure exactly:
+{"items":[{"name":"string","quantity":number,"price":number}],
+"vatAmount":number,"serviceChargeAmt":number,"totalPayment":number}
+
+- Convert prices to integers (no commas).
+- Service is noted as SERVICE, usually at 10% of the SUBTOTAL.
+- If there's no service charge, set "serviceChargeAmt": 0.
+- VAT is noted as VAT or PB1, usually at 11% of the SUBTOTAL.
+- If there's no vat, set "vatAmount": 0.
+- If there's no total payment, set "totalPayment" = sum of all item prices.
+- Do NOT wrap your response in triple backticks or add new lines.
+
+Attached image:
+`,
+              },
+
+              {
+                type: "image_url",
+                image_url: {
+                  url: photoResponse.url,
+                },
+              },
+            ],
+          },
+        ],
+        store: true,
+      });
+
+      console.log(gptResponse.choices[0]);
+
+      const rawOutput = gptResponse.choices[0].message.content;
+      const cleanedOutput = rawOutput.replace(/(\r\n|\n|\r)/gm, "").trim();
+
+      let parsedJson;
+      try {
+        parsedJson = JSON.parse(cleanedOutput);
+      } catch (error) {
+        return next({
+          name: "BadRequest",
+          message: "GPT output is not valid JSON",
+        });
+      }
+
+      //OPENAI
+
       return res.status(200).json({
         message: "File uploaded successfully",
-        imageUrl: response.url,
+        imageUrl: photoResponse.url,
+        // message: response.choices[0],
+        rawGPT: rawOutput,
+        data: parsedJson,
       });
     } catch (err) {
       next(err);
@@ -61,7 +126,6 @@ class BillController {
         vatRate: parsedVatRate,
         serviceChargeRate: parsedServiceChargeRate,
       });
-
       return res
         .status(201)
         .json({ message: "Bill created successfully", bill: newBill });
