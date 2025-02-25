@@ -15,7 +15,9 @@ function errorHandler(err, req, res, next) {
       // field ga lengkap (sequelize)
       res.status(400).json({ message: err.errors[0].message });
       break;
-
+    case "SequelizeForeignKeyConstraintError":
+      // sequelize untuk object yang harus ada di table
+      res.status(400).json({ message: err.message });
     case "SequelizeUniqueConstraintError":
       // sequelize untuk object yang harus unique
       res.status(400).json({ message: err.errors[0].message });

@@ -29,7 +29,8 @@ class ItemController {
       const items = await Item.findAll({ where: { BillId: billId } });
 
       if (!items) {
-        return res.status(404).json({ error: "Items not found" });
+        next({ name: "NotFound", message: "Item not found" });
+        return;
       }
 
       return res.json(items);
