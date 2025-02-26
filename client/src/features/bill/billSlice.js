@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import httpClient from "../../helpers/http-client";
 
-// Async thunk to create a new bill
 export const createBill = createAsyncThunk(
   "bill/createBill",
   async (billData, { rejectWithValue }) => {
@@ -14,7 +13,6 @@ export const createBill = createAsyncThunk(
   }
 );
 
-// Async thunk to get bills by user
 export const getBillsByUser = createAsyncThunk(
   "bill/getBillsByUser",
   async (_, { rejectWithValue }) => {
@@ -29,7 +27,6 @@ export const getBillsByUser = createAsyncThunk(
   }
 );
 
-// Async thunk to get a bill by id
 export const getBillById = createAsyncThunk(
   "bill/getBillById",
   async (billId, { rejectWithValue }) => {
@@ -55,7 +52,6 @@ export const getBillById = createAsyncThunk(
 //   }
 // );
 
-// Async thunk to delete a bill
 export const deleteBill = createAsyncThunk(
   "bill/deleteBill",
   async (billId, { rejectWithValue }) => {
@@ -68,7 +64,6 @@ export const deleteBill = createAsyncThunk(
   }
 );
 
-// Async thunk to upload a bill image (which also triggers OpenAI processing)
 export const uploadBillImage = createAsyncThunk(
   "bill/uploadBillImage",
   async (formData, { rejectWithValue }) => {
@@ -76,7 +71,8 @@ export const uploadBillImage = createAsyncThunk(
       const response = await httpClient.post("/bills/upload-image", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      // response.data should include imageUrl, rawGPT, and parsed data
+      // console.log(response.data);
+      // response.data ada imageUrl, rawGPT, and parsed data
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data);

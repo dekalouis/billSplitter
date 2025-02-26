@@ -10,19 +10,17 @@ const AddBillPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Retrieve parsed data from upload via location state
+  // ngambil parse data dari upload pakai location state
   const { uploadData } = location.state || {};
 
   useEffect(() => {
     if (!uploadData) {
-      // If no data is provided, redirect back to the upload page.
       navigate("/bills/upload");
     }
   }, [uploadData, navigate]);
 
-  // Pre-populate form fields based on uploadData
+  // prepopulate form dari uploadData
   const [billImageUrl, setBillImageUrl] = useState(uploadData?.imageUrl || "");
-  // Use current date as default (can be overwritten)
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [vatRate, setVatRate] = useState(uploadData?.data?.vatRate || "");
   const [serviceChargeRate, setServiceChargeRate] = useState(
@@ -37,32 +35,28 @@ const AddBillPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Create a new bill using the form data
+      //bikin billnya
       const billPayload = {
         billImageUrl,
         vatRate,
         serviceChargeRate,
-        // You might include the date if your backend supports it.
       };
       const billResult = await dispatch(createBill(billPayload)).unwrap();
       const billId = billResult.id;
-
-      // For each item, create a new item associated with the bill.
+      //buat new item untuk masing-masing item di billId yang sama.
       for (const item of items) {
         await dispatch(createItem({ ...item, BillId: billId }));
       }
 
-      // After creation, redirect to the bills page for the current user.
-      navigate(`/bills`);
+      //pas selesai
+      navigate(`/bills/add-participants/${billId}`);
     } catch (err) {
       console.error("Error saving bill:", err);
     }
   };
 
-  // Handler to update items array when an item's field changes.
   const handleItemChange = (index, field, value) => {
     const updatedItems = [...items];
-    // Convert quantity/price to numbers if needed
     updatedItems[index][field] =
       field === "quantity" || field === "price" ? parseInt(value) : value;
     setItems(updatedItems);

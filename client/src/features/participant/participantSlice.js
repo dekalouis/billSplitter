@@ -1,54 +1,30 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import httpClient from "../../helpers/http-client";
 
-// Async thunk to create a participant
 export const createParticipant = createAsyncThunk(
   "participant/createParticipant",
-  async (participantData, { rejectWithValue }) => {
+  async ({ BillId, name }, { rejectWithValue }) => {
     try {
-      const response = await httpClient.post("/participants", participantData);
-      return response.data.participant;
-    } catch (err) {
-      return rejectWithValue(err.response.data);
-    }
-  }
-);
-
-// Async thunk to get participants by BillId
-export const getParticipantsByBill = createAsyncThunk(
-  "participant/getParticipantsByBill",
-  async (billId, { rejectWithValue }) => {
-    try {
-      const response = await httpClient.get(`/participants/bill/${billId}`);
+      const response = await httpClient.post("/participants", { BillId, name });
       return response.data;
     } catch (err) {
-      return rejectWithValue(err.response.data);
+      return rejectWithValue(
+        err.response?.data || "Failed to create participant"
+      );
     }
   }
 );
 
-// Async thunk to update a participant
-export const updateParticipant = createAsyncThunk(
-  "participant/updateParticipant",
-  async ({ id, updateData }, { rejectWithValue }) => {
+export const getParticipantsByBill = createAsyncThunk(
+  "participant/getParticipantsByBill",
+  async (BillId, { rejectWithValue }) => {
     try {
-      await httpClient.put(`/participants/${id}`, updateData);
-      return { id, updateData };
+      const response = await httpClient.get(`/participants/bill/${BillId}`);
+      return response.data;
     } catch (err) {
-      return rejectWithValue(err.response.data);
-    }
-  }
-);
-
-// Async thunk to delete a participant
-export const deleteParticipant = createAsyncThunk(
-  "participant/deleteParticipant",
-  async (id, { rejectWithValue }) => {
-    try {
-      await httpClient.delete(`/participants/${id}`);
-      return id;
-    } catch (err) {
-      return rejectWithValue(err.response.data);
+      return rejectWithValue(
+        err.response?.data || "Failed to fetch participants"
+      );
     }
   }
 );
@@ -69,11 +45,11 @@ const participantSlice = createSlice({
       })
       .addCase(createParticipant.fulfilled, (state, action) => {
         state.loading = false;
-        state.participants.push(action.payload);
+        state.participants.push(action.payload); // Ensure new participants are added
       })
       .addCase(createParticipant.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message || action.error.message;
+        state.error = action.payload;
       })
       .addCase(getParticipantsByBill.pending, (state) => {
         state.loading = true;
@@ -81,37 +57,11 @@ const participantSlice = createSlice({
       })
       .addCase(getParticipantsByBill.fulfilled, (state, action) => {
         state.loading = false;
-        state.participants = action.payload;
+        state.participants = action.payload.participants;
       })
       .addCase(getParticipantsByBill.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message || action.error.message;
-      })
-      .addCase(updateParticipant.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateParticipant.fulfilled, (state, action) => {
-        state.loading = false;
-        // Optionally update the participant in state.participants here.
-      })
-      .addCase(updateParticipant.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload.message || action.error.message;
-      })
-      .addCase(deleteParticipant.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(deleteParticipant.fulfilled, (state, action) => {
-        state.loading = false;
-        state.participants = state.participants.filter(
-          (p) => p.id !== action.payload
-        );
-      })
-      .addCase(deleteParticipant.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload.message || action.error.message;
+        state.error = action.payload;
       });
   },
 });

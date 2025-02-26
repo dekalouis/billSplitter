@@ -7,6 +7,8 @@ import LoginPage from "./pages/Login.page";
 import AddBillPage from "./pages/AddBill.page";
 import UploadBillPage from "./pages/UploadBill.page";
 import BillsPage from "./pages/Bills.page";
+import AddParticipantsPage from "./pages/AddParticipant.page";
+import AllocateItemsPage from "./pages/AllocateItems.page";
 
 function App() {
   return (
@@ -32,6 +34,14 @@ function App() {
           <Route path="/bills/:id" element={<h1>Bill Detail Page</h1>} />
           <Route path="/bills/upload" element={<UploadBillPage />} />
           <Route path="/bills/add" element={<AddBillPage />} />
+          <Route
+            path="/bills/add-participants/:billId"
+            element={<AddParticipantsPage />}
+          />
+          <Route
+            path="/bills/allocate-items/:billId"
+            element={<AllocateItemsPage />}
+          />
 
           {/* items */}
           <Route

@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import httpClient from "../../helpers/http-client";
 
-// Async thunk to create an item
 export const createItem = createAsyncThunk(
   "item/createItem",
   async (itemData, { rejectWithValue }) => {
@@ -14,7 +13,6 @@ export const createItem = createAsyncThunk(
   }
 );
 
-// Async thunk to get items by BillId
 export const getItemsByBill = createAsyncThunk(
   "item/getItemsByBill",
   async (billId, { rejectWithValue }) => {
@@ -27,7 +25,6 @@ export const getItemsByBill = createAsyncThunk(
   }
 );
 
-// Async thunk to update an item
 export const updateItem = createAsyncThunk(
   "item/updateItem",
   async ({ id, updateData }, { rejectWithValue }) => {
@@ -40,7 +37,6 @@ export const updateItem = createAsyncThunk(
   }
 );
 
-// Async thunk to delete an item
 export const deleteItem = createAsyncThunk(
   "item/deleteItem",
   async (id, { rejectWithValue }) => {

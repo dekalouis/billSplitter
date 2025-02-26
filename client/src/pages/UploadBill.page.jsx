@@ -17,13 +17,12 @@ const UploadBillPage = () => {
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) return;
-    // Prepare form data
+
     const formData = new FormData();
     formData.append("image", file);
-    // Dispatch the thunk to upload image
+
     const resultAction = await dispatch(uploadBillImage(formData));
     if (uploadBillImage.fulfilled.match(resultAction)) {
-      // Redirect to the add bill page with parsed data in location state
       navigate("/bills/add", { state: { uploadData: resultAction.payload } });
     }
   };
