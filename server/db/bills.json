@@ -1,0 +1,47 @@
+[
+      {
+        "id": 1,
+        "createdBy": 1,
+        "billImageUrl": "https://example.com/bill1.jpg",
+        "createdAt": "2025-02-01T10:00:00Z",
+        "updatedAt": "2025-02-01T10:05:00Z",
+        "vatRate": 10.00,
+        "serviceChargeRate": 5.00,
+        "vatAmount": 5000,
+        "serviceChargeAmt": 2500
+      },
+      {
+        "id": 2,
+        "createdBy": 1,
+        "billImageUrl": "https://example.com/bill2.jpg",
+        "createdAt": "2025-02-05T12:00:00Z",
+        "updatedAt": "2025-02-05T12:05:00Z",
+        "vatRate": 10.00,
+        "serviceChargeRate": 0.00,
+        "vatAmount": 7000,
+        "serviceChargeAmt": 0
+      },
+      {
+        "id": 3,
+        "createdBy": 2,
+        "billImageUrl": "https://example.com/bill3.jpg",
+        "createdAt": "2025-02-10T09:30:00Z",
+        "updatedAt": "2025-02-10T09:35:00Z",
+        "vatRate": 0.00,
+        "serviceChargeRate": 5.00,
+        "vatAmount": 0,
+        "serviceChargeAmt": 3000
+      },
+      {
+        "id": 4,
+        "createdBy": 2,
+        "billImageUrl": "https://example.com/bill4.jpg",
+        "createdAt": "2025-02-15T14:00:00Z",
+        "updatedAt": "2025-02-15T14:10:00Z",
+        "vatRate": 10.00,
+        "serviceChargeRate": 10.00,
+        "vatAmount": 10000,
+        "serviceChargeAmt": 10000
+      }
+]
+    

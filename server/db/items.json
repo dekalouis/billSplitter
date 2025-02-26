@@ -1,0 +1,87 @@
+[
+
+      {
+        "id": 1,
+        "name": "Nasi Goreng",
+        "quantity": 2,
+        "price": 25000,
+        "BillId": 1
+      },
+      {
+        "id": 2,
+        "name": "Teh Manis",
+        "quantity": 2,
+        "price": 8000,
+        "BillId": 1
+      },
+      {
+        "id": 3,
+        "name": "Es Campur",
+        "quantity": 1,
+        "price": 15000,
+        "BillId": 1
+      },
+  
+
+      {
+        "id": 4,
+        "name": "Mie Ayam",
+        "quantity": 1,
+        "price": 20000,
+        "BillId": 2
+      },
+      {
+        "id": 5,
+        "name": "Es Jeruk",
+        "quantity": 1,
+        "price": 10000,
+        "BillId": 2
+      },
+      {
+        "id": 6,
+        "name": "Extra Topping",
+        "quantity": 2,
+        "price": 5000,
+        "BillId": 2
+      },
+  
+
+      {
+        "id": 7,
+        "name": "Bakso",
+        "quantity": 3,
+        "price": 15000,
+        "BillId": 3
+      },
+      {
+        "id": 8,
+        "name": "Teh Botol",
+        "quantity": 3,
+        "price": 5000,
+        "BillId": 3
+      },
+  
+
+      {
+        "id": 9,
+        "name": "Pizza",
+        "quantity": 2,
+        "price": 75000,
+        "BillId": 4
+      },
+      {
+        "id": 10,
+        "name": "Pasta",
+        "quantity": 1,
+        "price": 60000,
+        "BillId": 4
+      },
+      {
+        "id": 11,
+        "name": "Soft Drink",
+        "quantity": 3,
+        "price": 10000,
+        "BillId": 4
+      }
+    ]
+   
