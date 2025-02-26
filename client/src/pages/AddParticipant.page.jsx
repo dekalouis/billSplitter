@@ -30,7 +30,7 @@ const AddParticipantsPage = () => {
       for (const participant of newParticipants) {
         const payload = { BillId: Number(billId), name: participant.name };
 
-        console.log("payloadNYAAA", payload);
+        // console.log("payloadNYAAA", payload);
 
         await dispatch(createParticipant(payload)).unwrap();
       }

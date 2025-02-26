@@ -87,9 +87,8 @@ const itemSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateItem.fulfilled, (state, action) => {
+      .addCase(updateItem.fulfilled, (state) => {
         state.loading = false;
-        // Optionally update the item in state.items here.
       })
       .addCase(updateItem.rejected, (state, action) => {
         state.loading = false;

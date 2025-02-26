@@ -45,14 +45,14 @@ const AllocateItemsPage = () => {
         );
       }
     }
-    console.log("AllocationNYAAAAAA", allocations);
-    navigate(`/bills`);
+    // console.log("AllocationNYAAAAAA", allocations);
+    navigate(`/bills/${billId}`);
   };
 
   const items = currentBill?.Items || [];
   const participantList = currentBill?.Participants || [];
 
-  console.log(participantList, `INI DAFTAR ORANGNYA`);
+  //   console.log(participantList, `INI DAFTAR ORANGNYA`);
 
   if (billLoading || participantLoading) {
     return <p>Loading bill details...</p>;
