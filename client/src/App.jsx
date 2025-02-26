@@ -4,6 +4,9 @@ import { store } from "./store/store";
 import { Provider } from "react-redux";
 import RegisterPage from "./pages/Register.page";
 import LoginPage from "./pages/Login.page";
+import AddBillPage from "./pages/AddBill.page";
+import UploadBillPage from "./pages/UploadBill.page";
+import BillsPage from "./pages/Bills.page";
 
 function App() {
   return (
@@ -20,10 +23,15 @@ function App() {
           <Route path="/users/:id" element={<h1>ProfilePage</h1>} />
 
           {/* bill */}
-          <Route path="/bills/add-bill" element={<h1>Addbill</h1>} />
+          {/* <Route path="/bills/add-bill" element={<h1>Addbill</h1>} />
           <Route path="/bills/user/:userId" element={<h1>All bills</h1>} />
           <Route path="/bills/:id" element={<h1>BillById</h1>} />
-          <Route path="/bills/upload-image" element={<h1>UploadBill</h1>} />
+          <Route path="/bills/upload-image" element={<h1>UploadBill</h1>} /> */}
+
+          <Route path="/bills" element={<BillsPage />} />
+          <Route path="/bills/:id" element={<h1>Bill Detail Page</h1>} />
+          <Route path="/bills/upload" element={<UploadBillPage />} />
+          <Route path="/bills/add" element={<AddBillPage />} />
 
           {/* items */}
           <Route

@@ -16,7 +16,8 @@ const RegisterPage = () => {
     try {
       // dispatch dulu registerUser async thunk
       await dispatch(registerUser({ email, password })).unwrap();
-      navigate("/login");
+
+      navigate("/users/login");
     } catch (err) {
       console.error("Registration failed:", err);
     }

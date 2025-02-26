@@ -12,7 +12,7 @@ router.use(authentication);
 router.post("/add-bill", BillController.createBill);
 
 //check semua bill
-router.get("/user/:userId", BillController.getBillsByUser);
+router.get("/", BillController.getBillsByUser);
 
 //check bill dari id
 router.get("/:id", authorizeBill, BillController.getBillById);

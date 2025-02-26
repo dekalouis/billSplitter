@@ -97,28 +97,22 @@ describe("POST /bills/add-bill", () => {
 });
 
 // ==================== GET BILLS BY USER ====================
-describe("GET /bills/user/:userId", () => {
-  test("200 Success - get bills by user", async () => {
+describe("GET /bills", () => {
+  test("200 Success - get bills for authenticated user", async () => {
     const response = await request(app)
-      .get(`/bills/user/${testUserId}`)
+      .get("/bills")
       .set("Authorization", `Bearer ${validAccessToken}`);
-    if (response.status === 200) {
-      expect(response.body).toHaveProperty("bills", expect.any(Array));
-    } else {
-      expect([403, 404]).toContain(response.status);
-    }
-  });
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("bills", expect.any(Array));
+    response.body.bills.forEach((bill) => {
+      expect(bill.createdBy).toBe(1);
 
-  test("403 Forbidden - another user's bills", async () => {
-    const response = await request(app)
-      .get("/bills/user/9999")
-      .set("Authorization", `Bearer ${validAccessToken}`);
-    expect(response.status).toBe(403);
-    expect(response.body).toHaveProperty("message", expect.any(String));
+      // console.log(bill.createdBy, testUserId, `---- INI YA`);
+    });
   });
 
   test("401 Unauthorized - no token", async () => {
-    const response = await request(app).get(`/bills/user/${testUserId}`);
+    const response = await request(app).get("/bills");
     expect([401, 403]).toContain(response.status);
     expect(response.body).toHaveProperty("message", expect.any(String));
   });

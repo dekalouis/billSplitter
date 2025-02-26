@@ -49,6 +49,7 @@ const userSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.userInfo = action.payload;
+        console.log(action.payload, `-----`, "PAYLOADNYA");
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -62,6 +63,7 @@ const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.accessToken = action.payload.access_token;
+        // console.log(action.payload.access_token, `-----`, "PAYLOADNYA");
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;

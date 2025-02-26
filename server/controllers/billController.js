@@ -1,4 +1,4 @@
-const { Bill } = require("../models");
+const { Bill, Item, Participant } = require("../models");
 const imagekit = require("../helpers/imagekit");
 const openai = require("../helpers/openAi");
 
@@ -136,22 +136,29 @@ Attached image:
   static async getBillsByUser(req, res, next) {
     try {
       //   return res.json("logging for getBillsByUser");
-      const { userId } = req.params;
+      // const { userId } = req.params;
 
       //authorization terpisah
       const authenticatedUserId = req.user.id;
-      if (authenticatedUserId !== parseInt(userId, 10)) {
-        next({
-          name: "Forbidden",
-          message: "You cannot access other user's bills",
-        });
-        return;
-      }
-      //authorization terpisah
 
       const bills = await Bill.findAll({
-        where: { createdBy: userId },
+        where: { createdBy: authenticatedUserId },
+        include: [
+          {
+            model: Item,
+            include: [
+              {
+                model: Participant,
+                through: { attributes: [] },
+              },
+            ],
+          },
+          {
+            model: Participant,
+          },
+        ],
       });
+
       return res.status(200).json({ bills });
     } catch (err) {
       next(err);
@@ -162,7 +169,23 @@ Attached image:
     try {
       //   return res.json("logging for getBillById");
       const { id } = req.params;
-      const bill = await Bill.findByPk(id);
+      const bill = await Bill.findByPk(id, {
+        include: [
+          {
+            model: Item,
+            include: [
+              {
+                model: Participant,
+                through: { attributes: [] },
+              },
+            ],
+          },
+          {
+            model: Participant,
+          },
+        ],
+      });
+
       if (!bill) {
         next({ name: "NotFound", message: "Bill not found" });
         return;

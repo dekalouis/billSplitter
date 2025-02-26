@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, accessToken } = useSelector((state) => state.user);
+  const { loading, error } = useSelector((state) => state.user);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,11 +14,15 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await dispatch(loginUser({ email, password })).unwrap();
+      const data = await dispatch(loginUser({ email, password })).unwrap();
 
-      //   console.log(dispData, `-----`, accessToken);
-      localStorage.setItem("access_token", accessToken);
-      navigate("/");
+      // console.log(`INI YA-----`, data);
+      localStorage.setItem("access_token", data.access_token);
+
+      // const userId = ;
+      // console.log(userId);
+
+      navigate(`/bills`);
     } catch (err) {
       console.error("Login failed:", err);
     }

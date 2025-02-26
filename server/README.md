@@ -14,7 +14,7 @@
   - **GET** /users/:id
 - **Bill Endpoints**
   - **POST** /bills/add-bill
-  - **GET** /bills/user/:userId
+  - **GET** /bills
   - **GET** /bills/:id
   - **PUT** /bills/:id
   - **DELETE** /bills/:id
@@ -217,11 +217,11 @@ Authorization: Bearer <access_token>
 
 ---
 
-### 2. GET /bills/user/:userId
+### 2. GET /bills
 
 **Description**
 
-Retrieve all bills belonging to a specific user ID.
+Retrieve all bills belonging to a specific user.
 
 Only that user (matching the JWT’s user ID) can see these bills.
 
@@ -232,38 +232,48 @@ Authorization: Bearer <access_token>
 
 ```
 
-**URL Parameters**
-
-- `userId` - the user’s ID (integer)
-
 **Response Examples**
 
 - **200 OK**
+
   ```json
   {
     "bills": [
       {
-        "id": 10,
-        "createdBy": 2,
-        "billImageUrl": null,
-        "vatRate": 0.11,
-        "serviceChargeRate": 0.1,
-        "createdAt": "2025-02-14T00:00:00.000Z",
-        "updatedAt": "2025-02-14T00:00:00.000Z"
-      },
-      {
-        "id": 11,
-        "createdBy": 2,
-        "billImageUrl": "http://someimage.url",
-        "vatRate": 0.11,
-        "serviceChargeRate": 0.1,
-        "createdAt": "2025-02-15T00:00:00.000Z",
-        "updatedAt": "2025-02-15T00:00:00.000Z"
+        "id": 1,
+        "totalPayment": 50000,
+        "vatAmount": 5000,
+        "serviceChargeAmt": 5000,
+        "items": [
+          {
+            "id": 10,
+            "name": "Pizza",
+            "price": 20000,
+            "quantity": 2,
+            "participants": [
+              { "id": 100, "name": "Alice", "portion": 50 },
+              { "id": 101, "name": "Bob", "portion": 50 }
+            ]
+          },
+          {
+            "id": 11,
+            "name": "Soda",
+            "price": 5000,
+            "quantity": 1,
+            "participants": [{ "id": 102, "name": "Charlie", "portion": 100 }]
+          }
+        ],
+        "participants": [
+          { "id": 100, "name": "Alice" },
+          { "id": 101, "name": "Bob" },
+          { "id": 102, "name": "Charlie" }
+        ]
       }
     ]
   }
   ```
-- **403 Forbidden** (If `userId` does not match the logged-in user’s ID)
+
+- **403 Forbidden** (If `user` does not match the logged-in user’s ID)
   ```json
   {
     "message": "You cannot access other user's bills"
@@ -294,19 +304,44 @@ Authorization: Bearer <access_token>
 **Response Examples**
 
 - **200 OK**
+
   ```json
   {
-    "bill": {
-      "id": 10,
-      "createdBy": 2,
-      "billImageUrl": "http://someimage.url",
-      "vatRate": 0.11,
-      "serviceChargeRate": 0.1,
-      "createdAt": "2025-02-14T00:00:00.000Z",
-      "updatedAt": "2025-02-14T00:00:00.000Z"
-    }
+    "bills": [
+      {
+        "id": 1,
+        "totalPayment": 50000,
+        "vatAmount": 5000,
+        "serviceChargeAmt": 5000,
+        "items": [
+          {
+            "id": 10,
+            "name": "Pizza",
+            "price": 20000,
+            "quantity": 2,
+            "participants": [
+              { "id": 100, "name": "Alice", "portion": 50 },
+              { "id": 101, "name": "Bob", "portion": 50 }
+            ]
+          },
+          {
+            "id": 11,
+            "name": "Soda",
+            "price": 5000,
+            "quantity": 1,
+            "participants": [{ "id": 102, "name": "Charlie", "portion": 100 }]
+          }
+        ],
+        "participants": [
+          { "id": 100, "name": "Alice" },
+          { "id": 101, "name": "Bob" },
+          { "id": 102, "name": "Charlie" }
+        ]
+      }
+    ]
   }
   ```
+
 - **403 Forbidden** (If this bill is not owned by the logged-in user)
   ```json
   {
@@ -1157,39 +1192,50 @@ Many endpoints use the same error structures. Examples:
 
 - **401 Unauthorized**
   Missing or invalid token:
-  ```json
+
+  ````json
   {
   "message": "Invalid token"
   }
 
       ```
 
+  ````
+
 - **403 Forbidden**
   User is authenticated but does not have the permission to access/modify this data:
-  ```json
+
+  ````json
   {
   "message": "Forbidden"
   }
 
       ```
 
+  ````
+
 - **404 Not Found**
   Resource not found for the provided ID:
-  ```json
+
+  ````json
   {
   "message": "<Resource> not found"
   }
 
       ```
 
+  ````
+
 - **400 Bad Request**
   Invalid input or required fields missing:
-  ```json
+
+  ````json
   {
   "message": "BadRequest"
   }
 
       ```
+  ````
 
 ---
 
