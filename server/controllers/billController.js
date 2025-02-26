@@ -84,7 +84,7 @@ Attached image:
       } catch (error) {
         return next({
           name: "BadRequest",
-          message: "GPT output is not valid JSON",
+          message: "Output is not valid JSON",
         });
       }
 

@@ -1,35 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        {/* <Route path="/" element={<Navigate to="/bills/user/:userId" replace />} /> */}
+
+        <Route path="/" element={<h1>landing</h1>} />
+
+        {/* user */}
+        <Route path="/users/register" element={<h1>RegisterPAge</h1>} />
+        <Route path="/users/login" element={<h1>LoginPage</h1>} />
+        <Route path="/users/:id" element={<h1>ProfilePage</h1>} />
+
+        {/* bill */}
+        <Route path="/bills/add-bill" element={<h1>Addbill</h1>} />
+        <Route path="/bills/user/:userId" element={<h1>All bills</h1>} />
+        <Route path="/bills/:id" element={<h1>BillById</h1>} />
+        <Route path="/bills/upload-image" element={<h1>UploadBill</h1>} />
+
+        {/* items */}
+        <Route
+          path="/items/bill/:billId"
+          element={<h1>all items in bill</h1>}
+        />
+
+        {/* partisipan */}
+        <Route
+          path="/participants/bill/:billId"
+          element={<h1>all items in bill</h1>}
+        />
+
+        {/* alokasi */}
+        <Route
+          path="/allocations/item/:itemId"
+          element={<h1>all items in bill</h1>}
+        />
+        <Route
+          path="/allocations/participant/:participantId"
+          element={<h1>all partisipan in bill</h1>}
+        />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
