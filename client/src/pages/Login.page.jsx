@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/user/userSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 
@@ -77,6 +77,12 @@ const LoginPage = () => {
               {loading ? "Logging in..." : "Login"}
             </button>
           </form>
+          <p className="mt-4 text-center ">
+            {"Don't"} have an account?{" "}
+            <Link className="text-sky-800" to={"/users/register"}>
+              Register
+            </Link>
+          </p>
         </div>
       </div>
     </div>

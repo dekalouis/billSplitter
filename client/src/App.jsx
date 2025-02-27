@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { store } from "./store/store";
 import { Provider } from "react-redux";
 import RegisterPage from "./pages/Register.page";
@@ -19,7 +19,7 @@ function App() {
       <BrowserRouter>
         <ToastContainer position="top-right" autoClose={3000} />
         <Routes>
-          {/* <Route path="/" element={<Navigate to="/bills/user/:userId" replace />} /> */}
+          <Route path="/" element={<Navigate to="/users/login" replace />} />
 
           <Route path="/" element={<h1>landing</h1>} />
           {/* <Route path="/" element={<h1>landing</h1>} /> */}
