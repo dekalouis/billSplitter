@@ -9,33 +9,33 @@
     {
       "id": 2,
       "isAllocated": true,
-      "ParticipantId": 2,
-      "ItemId": 1
+      "ParticipantId": 1,
+      "ItemId": 3
     },
     {
       "id": 3,
       "isAllocated": true,
       "ParticipantId": 1,
-      "ItemId": 2
+      "ItemId": 4
     },
     {
       "id": 4,
       "isAllocated": true,
       "ParticipantId": 2,
-      "ItemId": 3
+      "ItemId": 2
     },
 
 
     {
       "id": 5,
       "isAllocated": true,
-      "ParticipantId": 3,
-      "ItemId": 4
+      "ParticipantId": 2,
+      "ItemId": 3
     },
     {
       "id": 6,
       "isAllocated": true,
-      "ParticipantId": 4,
+      "ParticipantId": 2,
       "ItemId": 5
     },
     {
@@ -44,57 +44,11 @@
       "ParticipantId": 3,
       "ItemId": 6
     },
-
-
     {
       "id": 8,
       "isAllocated": true,
-      "ParticipantId": 5,
+      "ParticipantId": 3,
       "ItemId": 7
-    },
-    {
-      "id": 9,
-      "isAllocated": true,
-      "ParticipantId": 6,
-      "ItemId": 7
-    },
-    {
-      "id": 10,
-      "isAllocated": true,
-      "ParticipantId": 6,
-      "ItemId": 8
-    },
-
-   
-    {
-      "id": 11,
-      "isAllocated": true,
-      "ParticipantId": 7,
-      "ItemId": 9
-    },
-    {
-      "id": 12,
-      "isAllocated": true,
-      "ParticipantId": 9,
-      "ItemId": 9
-    },
-    {
-      "id": 13,
-      "isAllocated": true,
-      "ParticipantId": 8,
-      "ItemId": 10
-    },
-    {
-      "id": 14,
-      "isAllocated": true,
-      "ParticipantId": 7,
-      "ItemId": 11
-    },
-    {
-      "id": 15,
-      "isAllocated": true,
-      "ParticipantId": 8,
-      "ItemId": 11
     }
   ]
 
