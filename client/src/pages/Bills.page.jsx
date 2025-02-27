@@ -1,90 +1,106 @@
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getBillsByUser } from "../features/bill/billSlice";
+import { getBillsByUser, deleteBill } from "../features/bill/billSlice";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const BillsPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { bills, loading, error } = useSelector((state) => state.bill);
-  // console.log("Bills from Redux:", bills);
 
   useEffect(() => {
     dispatch(getBillsByUser());
   }, [dispatch]);
 
   const calculateTotal = (bill) => {
-    if (!bill.Items || !Array.isArray(bill.Items)) return 0;
-    const itemTotal = bill.Items.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-    // console.log(itemTotal, `HARGA SEBELOM PAJAK`);
-    // console.log(bill.vatAmount, `HARGA  PAJAK`);
-    // console.log(bill.serviceChargeAmt, `HARGA  Servis`);
-    return itemTotal + bill.vatAmount + bill.serviceChargeAmt;
+    const itemsTotal =
+      bill.Items?.reduce((sum, item) => {
+        return sum + item.price;
+      }, 0) || 0;
+    return itemsTotal + bill.vatAmount + bill.serviceChargeAmt;
+  };
+
+  const handleRowClick = (billId) => {
+    navigate(`/bills/${billId}`);
+  };
+
+  const handleDelete = (e, billId) => {
+    //BIAR ROW ONCLICK GA TRIGGER SENDIRI PAKAUI INI
+    e.stopPropagation();
+    dispatch(deleteBill(billId));
   };
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h1>Your Bills</h1>
-      {loading && <p>Loading bills...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <div className="flex-1 p-8 relative bg-sky-50 min-h-screen">
+      <div className="bg-sky-100 p-6 rounded-lg shadow-lg flex justify-between items-center">
+        <h2 className="text-3xl font-bold text-sky-700">Your Bills</h2>
+        {/* Optionally, add an "Add Bill" button here */}
+      </div>
+
+      {loading && <p className="text-center mt-4">Loading bills...</p>}
+      {error && <p className="text-center mt-4 text-red-500">Error: {error}</p>}
 
       {bills && bills.length > 0 ? (
-        <table
-          border="1"
-          cellPadding="10"
-          cellSpacing="0"
-          style={{ width: "100%", marginBottom: "1rem", textAlign: "left" }}
-        >
-          <thead>
-            <tr>
-              <th>Image</th>
-              <th>Date</th>
-              <th>Items</th>
-              <th>Participants</th>
-              <th style={{ textAlign: "right" }}>Total Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bills.map((bill) => (
-              <tr key={bill.id}>
-                <td>
-                  {bill.billImageUrl ? (
+        <div className="bg-white p-6 rounded-lg shadow-lg mt-6 overflow-x-auto">
+          <table className="w-full border-collapse border border-sky-300">
+            <thead>
+              <tr className="bg-sky-200 text-sky-700">
+                <th className="border border-sky-300 px-4 py-2">Bill Image</th>
+                <th className="border border-sky-300 px-4 py-2">
+                  Created Date
+                </th>
+                <th className="border border-sky-300 px-4 py-2">Items Count</th>
+                <th className="border border-sky-300 px-4 py-2">
+                  Participants Count
+                </th>
+                <th className="border border-sky-300 px-4 py-2">
+                  Total Amount
+                </th>
+                <th className="border border-sky-300 px-4 py-2">Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bills.map((bill) => (
+                <tr
+                  key={bill.id}
+                  onClick={() => handleRowClick(bill.id)}
+                  className="hover:bg-sky-100 cursor-pointer"
+                >
+                  <td className="border border-sky-300 px-4 py-2 text-center">
                     <img
                       src={bill.billImageUrl}
                       alt="Bill"
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        objectFit: "cover",
-                      }}
+                      className="w-24 h-auto rounded-md"
                     />
-                  ) : (
-                    "No Image"
-                  )}
-                </td>
-                <td>{new Date(bill.createdAt).toLocaleDateString()}</td>
-                <td>{bill.Items ? bill.Items.length : 0}</td>
-                <td>{bill.Participants ? bill.Participants.length : 0}</td>
-                <td style={{ textAlign: "right" }}>
-                  Rp. {calculateTotal(bill).toLocaleString()}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  </td>
+                  <td className="border border-sky-300 px-4 py-2">
+                    {new Date(bill.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="border border-sky-300 px-4 py-2 text-center">
+                    {bill.Items ? bill.Items.length : 0}
+                  </td>
+                  <td className="border border-sky-300 px-4 py-2 text-center">
+                    {bill.Participants ? bill.Participants.length : 0}
+                  </td>
+                  <td className="border border-sky-300 px-4 py-2 text-center">
+                    Rp. {calculateTotal(bill).toLocaleString()}
+                  </td>
+                  <td className="border border-sky-300 px-4 py-2 text-center">
+                    <button
+                      onClick={(e) => handleDelete(e, bill.id)}
+                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
-        !loading && <p>No bills found.</p>
+        !loading && <p className="text-center mt-4">No bills found.</p>
       )}
-
-      <button
-        onClick={() => navigate("/bills/upload")}
-        style={{ padding: "0.5rem 1rem" }}
-      >
-        Upload Bill
-      </button>
     </div>
   );
 };

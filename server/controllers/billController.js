@@ -107,14 +107,19 @@ Attached image:
   static async createBill(req, res, next) {
     try {
       const userId = req.user.id;
-      const { billImageUrl, vatRate, serviceChargeRate } = req.body;
-      const parsedVatRate = parseFloat(vatRate);
-      const parsedServiceChargeRate = parseFloat(serviceChargeRate);
+      const { billImageUrl, vatAmount, serviceChargeAmt } = req.body;
 
-      if (isNaN(parsedVatRate) || isNaN(parsedServiceChargeRate)) {
+      const parsedVatAmount = isNaN(parseInt(vatAmount))
+        ? 0
+        : parseInt(vatAmount);
+      const parsedServiceChargeAmt = isNaN(parseInt(serviceChargeAmt))
+        ? 0
+        : parseInt(serviceChargeAmt);
+
+      if (isNaN(parsedVatAmount) || isNaN(parsedServiceChargeAmt)) {
         next({
           name: "BadRequest",
-          message: "VAT rate and service charge rate must be valid numbers",
+          message: "VAT rate and service charge must be valid numbers",
         });
         return;
       }
@@ -122,8 +127,8 @@ Attached image:
       const newBill = await Bill.create({
         createdBy: userId,
         billImageUrl,
-        vatRate: parsedVatRate,
-        serviceChargeRate: parsedServiceChargeRate,
+        vatAmount: parsedVatAmount,
+        serviceChargeAmt: parsedServiceChargeAmt,
       });
       return res
         .status(201)
@@ -201,9 +206,10 @@ Attached image:
     try {
       //   return res.json("logging for updateBill");
       const { id } = req.params;
-      const { billImageUrl, vatRate, serviceChargeRate } = req.body;
+      const { billImageUrl, vatAmount, serviceChargeAmt } = req.body;
+
       const [updated] = await Bill.update(
-        { billImageUrl, vatRate, serviceChargeRate },
+        { billImageUrl, vatAmount, serviceChargeAmt },
         { where: { id } }
       );
 

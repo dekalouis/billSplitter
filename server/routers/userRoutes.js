@@ -11,6 +11,9 @@ router.post("/register", UserController.register);
 // loginr
 router.post("/login", UserController.login);
 
+//google
+router.post("/login/google", UserController.googleLogin);
+
 // getuser?
 router.get("/:id", authentication, UserController.getUserById);
 

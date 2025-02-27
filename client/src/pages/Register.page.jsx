@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../features/user/userSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 const RegisterPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading } = useSelector((state) => state.user);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,50 +18,68 @@ const RegisterPage = () => {
     try {
       // dispatch dulu registerUser async thunk
       await dispatch(registerUser({ email, password })).unwrap();
+      toast.success("Registration successful!", {
+        position: "top-right",
+      });
 
       navigate("/users/login");
     } catch (err) {
       console.error("Registration failed:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: err.message,
+      });
     }
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "2rem auto" }}>
-      <h1>Register</h1>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "1rem" }}>
-          <label>Email:</label>
-          <br />
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            required
-            style={{ width: "100%", padding: "0.5rem" }}
-          />
+    <div className="min-h-screen flex">
+      {/* Left side: gradient background */}
+      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-500 to-sky-400 items-center justify-center">
+        <h2 className="text-white text-4xl font-bold">Join Us!</h2>
+      </div>
+      {/* Right side: registration form */}
+      <div className="flex flex-col justify-center items-center w-full md:w-1/2 p-8 bg-white">
+        <div className="w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-6">Register</h1>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label className="block mb-2">Email:</label>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-2">Password:</label>
+              <input
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+            >
+              {loading ? "Registering..." : "Register"}
+            </button>
+          </form>
         </div>
-        <div style={{ marginBottom: "1rem" }}>
-          <label>Password:</label>
-          <br />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-            required
-            style={{ width: "100%", padding: "0.5rem" }}
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          style={{ padding: "0.5rem 1rem" }}
-        >
-          {loading ? "Registering..." : "Register"}
-        </button>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-      </form>
+        <p className="mt-4 text-center ">
+          Already have an account?{" "}
+          <Link className="text-sky-800" to={"/users/login"}>
+            Login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

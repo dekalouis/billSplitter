@@ -2,17 +2,11 @@ const { Participant, Item, ItemAllocation } = require("../models");
 
 class AllocationController {
   static async createAllocation(req, res, next) {
-    try {
-      const { allocatedQuantity, ParticipantId, ItemId } = req.body;
-      //   console.log(` LOGNYAAA =====`, allocatedQuantity, ParticipantId, ItemId);
-      // if (!allocatedQuantity || !ParticipantId || !ItemId) {
-      //   next({
-      //     name: "BadRequest",
-      //     message: "Invalid allocation data",
-      //   });
-      //   return;
-      // }
+    console.log("Allocation payload received:", req.body);
 
+    try {
+      const { ParticipantId, ItemId } = req.body;
+      //   console.log(` LOGNYAAA =====`, allocatedQuantity, ParticipantId, ItemId);
       //validasi
       const item = await Item.findOne({ where: { id: ItemId } });
       if (!item) {
@@ -28,14 +22,22 @@ class AllocationController {
       }
       //validasi
 
+      if (item.BillId !== participant.BillId) {
+        throw {
+          name: "BadRequest",
+          message: "Item and Participant must belong to the same bill",
+        };
+      }
+
       const allocation = await ItemAllocation.create({
-        allocatedQuantity,
+        isAllocated: true,
         ParticipantId,
         ItemId,
       });
-      return res
-        .status(201)
-        .json({ message: "Allocation created", allocation });
+      return res.status(201).json({
+        message: "Allocation created",
+        allocation: allocation.get({ plain: true }),
+      });
     } catch (err) {
       next(err);
     }
@@ -46,6 +48,7 @@ class AllocationController {
       const { itemId } = req.params;
       const allocations = await ItemAllocation.findAll({
         where: { ItemId: itemId },
+        include: [{ model: Item }, { model: Participant }],
       });
       return res.json(allocations);
     } catch (err) {
@@ -58,6 +61,7 @@ class AllocationController {
       const { participantId } = req.params;
       const allocations = await ItemAllocation.findAll({
         where: { ParticipantId: participantId },
+        include: [{ model: Item }, { model: Participant }],
       });
       return res.json(allocations);
     } catch (err) {
@@ -65,23 +69,23 @@ class AllocationController {
     }
   }
 
-  static async updateAllocation(req, res, next) {
-    try {
-      const { id } = req.params;
-      const { allocatedQuantity } = req.body;
-      const [updated] = await ItemAllocation.update(
-        { allocatedQuantity },
-        { where: { id } }
-      );
-      if (!updated) {
-        next({ name: "NotFound", message: "Allocation not found" });
-        return;
-      }
-      return res.json({ message: "Allocation updated successfully" });
-    } catch (err) {
-      next(err);
-    }
-  }
+  // static async updateAllocation(req, res, next) {
+  //   try {
+  //     const { id } = req.params;
+  //     const { allocatedQuantity } = req.body;
+  //     const [updated] = await ItemAllocation.update(
+  //       { allocatedQuantity },
+  //       { where: { id } }
+  //     );
+  //     if (!updated) {
+  //       next({ name: "NotFound", message: "Allocation not found" });
+  //       return;
+  //     }
+  //     return res.json({ message: "Allocation updated successfully" });
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // }
 
   static async deleteAllocation(req, res, next) {
     try {

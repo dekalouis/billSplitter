@@ -18,19 +18,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   ItemAllocation.init(
     {
-      allocatedQuantity: {
-        type: DataTypes.DECIMAL(5, 2),
+      isAllocated: {
+        type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: 1.0,
-        validate: {
-          min: {
-            args: [0.01],
-            msg: "allocatedQuantity must be at least 0.01",
-          },
-          isDecimal: {
-            msg: "allocatedQuantity must be a decimal value",
-          },
-        },
+        defaultValue: true,
       },
 
       ParticipantId: {

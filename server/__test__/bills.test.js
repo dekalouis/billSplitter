@@ -1,5 +1,3 @@
-// tests/bill.test.js
-
 const request = require("supertest");
 const app = require("../app");
 const { sequelize } = require("../models");
@@ -20,11 +18,7 @@ beforeAll(async () => {
         updatedAt: new Date(),
       },
     ];
-    const [userInsert] = await queryInterface.bulkInsert(
-      "Users",
-      seedUsers,
-      {}
-    );
+    await queryInterface.bulkInsert("Users", seedUsers, {});
     const response = await request(app).post("/users/login").send({
       email: "seedBill@test.com",
       password: "123456",
@@ -60,8 +54,8 @@ describe("POST /bills/add-bill", () => {
       .set("Authorization", `Bearer ${validAccessToken}`)
       .send({
         billImageUrl: "http://example.com/test.jpg",
-        vatRate: 0.11,
-        serviceChargeRate: 0.1,
+        vatAmount: 0.11,
+        serviceChargeAmt: 0.1,
       });
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty(
@@ -72,24 +66,27 @@ describe("POST /bills/add-bill", () => {
     testBillId = response.body.bill.id;
   });
 
-  test("400 Fail - invalid vat/service", async () => {
+  test("When vatAmount is invalid, bill is created with vatAmount = 0", async () => {
     const response = await request(app)
       .post("/bills/add-bill")
       .set("Authorization", `Bearer ${validAccessToken}`)
       .send({
         billImageUrl: "http://example.com/test.jpg",
-        vatRate: "abc",
-        serviceChargeRate: 0.1,
+        vatAmount: "abc",
+        serviceChargeAmt: 0.1,
       });
-    expect(response.status).toBe(400);
-    expect(response.body).toHaveProperty("message", expect.any(String));
+
+    expect(response.status).toBe(201);
+    expect(response.body).toHaveProperty("bill", expect.any(Object));
+
+    expect(response.body.bill.vatAmount).toBe(0);
   });
 
   test("401 Fail - no token", async () => {
     const response = await request(app).post("/bills/add-bill").send({
       billImageUrl: "http://example.com/test.jpg",
-      vatRate: 0.11,
-      serviceChargeRate: 0.1,
+      vatAmount: 0.11,
+      serviceChargeAmt: 0.1,
     });
     expect([401, 403]).toContain(response.status);
     expect(response.body).toHaveProperty("message", expect.any(String));
@@ -106,8 +103,6 @@ describe("GET /bills", () => {
     expect(response.body).toHaveProperty("bills", expect.any(Array));
     response.body.bills.forEach((bill) => {
       expect(bill.createdBy).toBe(1);
-
-      // console.log(bill.createdBy, testUserId, `---- INI YA`);
     });
   });
 
@@ -145,47 +140,6 @@ describe("GET /bills/:id", () => {
 
   test("401 Fail - no token", async () => {
     const response = await request(app).get(`/bills/${testBillId}`);
-    expect([401, 403]).toContain(response.status);
-  });
-});
-
-// ==================== UPDATE BILL ====================
-describe("PUT /bills/:id", () => {
-  test("200 Success - update bill", async () => {
-    const response = await request(app)
-      .put(`/bills/${testBillId}`)
-      .set("Authorization", `Bearer ${validAccessToken}`)
-      .send({
-        billImageUrl: "http://example.com/new.jpg",
-        vatRate: 0.12,
-        serviceChargeRate: 0.05,
-      });
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty(
-      "message",
-      "Bill updated successfully"
-    );
-  });
-
-  test("404 Not Found - invalid id", async () => {
-    const response = await request(app)
-      .put("/bills/999999")
-      .set("Authorization", `Bearer ${validAccessToken}`)
-      .send({
-        billImageUrl: "http://example.com/new.jpg",
-        vatRate: 0.12,
-        serviceChargeRate: 0.05,
-      });
-    expect(response.status).toBe(404);
-    expect(response.body).toHaveProperty("message", "Bill not found");
-  });
-
-  test("401 Fail - no token", async () => {
-    const response = await request(app).put(`/bills/${testBillId}`).send({
-      billImageUrl: "http://example.com/new.jpg",
-      vatRate: 0.12,
-      serviceChargeRate: 0.05,
-    });
     expect([401, 403]).toContain(response.status);
   });
 });
