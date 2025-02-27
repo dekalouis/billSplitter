@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/user/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import httpClient from "../helpers/http-client";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -37,6 +38,31 @@ const LoginPage = () => {
       });
     }
   };
+
+  async function handleCredentialResponse(response) {
+    console.log("Encoded JWT ID token:", response);
+
+    const { data } = await httpClient.post("/users/login/google", {
+      googleToken: response.credential,
+    });
+    localStorage.setItem("access_token", data.access_token);
+    toast.success("Login successful!", {
+      position: "top-right",
+    });
+
+    navigate(`/bills`);
+  }
+
+  useEffect(() => {
+    window.google.accounts.id.initialize({
+      client_id: import.meta.env.VITE_REACT_APP_GOOGLE_CLIENT_ID,
+      callback: handleCredentialResponse,
+    });
+    window.google.accounts.id.renderButton(
+      document.getElementById("buttonDiv"),
+      { theme: "outline", size: "large" } // customization attributes
+    );
+  }, []);
 
   return (
     <div className="min-h-screen flex">
@@ -84,6 +110,7 @@ const LoginPage = () => {
             </Link>
           </p>
         </div>
+        <div className="mt-3" id="buttonDiv"></div>
       </div>
     </div>
   );

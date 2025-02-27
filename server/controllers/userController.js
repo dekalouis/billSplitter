@@ -3,6 +3,8 @@ const { signToken } = require("../helpers/jwt");
 const { User } = require("../models");
 // const bcrypt = require("bcrypt");
 // const jwt = require("jsonwebtoken");
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client();
 
 class UserController {
   static async register(req, res, next) {
@@ -50,6 +52,37 @@ class UserController {
 
       const access_token = signToken({ id: user.id });
       res.status(200).json({ access_token });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async googleLogin(req, res, next) {
+    try {
+      const ticket = await client.verifyIdToken({
+        idToken: req.body.googleToken,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+      const payload = ticket.getPayload();
+
+      //jika belum registrasi langsung
+      let user = await User.findOne({ where: { email: payload.email } });
+      if (!user) {
+        user = await User.create(
+          {
+            email: payload.email,
+            password: Math.random().toString(),
+          },
+          {
+            hooks: false,
+          }
+        );
+      }
+      //jika sudah langsung token
+      const access_token = signToken({ id: user.id });
+      res.status(200).json({ access_token });
+
+      // console.log(payload, `PAYLOADNYA`);
     } catch (err) {
       next(err);
     }
