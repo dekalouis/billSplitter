@@ -15,67 +15,40 @@ const Navbar = () => {
   };
 
   return (
-    <nav
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "1rem",
-        backgroundColor: "#f2f2f2",
-        borderBottom: "1px solid #ccc",
-      }}
-    >
-      <div>
-        <Link
-          to="/bills"
-          style={{ marginRight: "1rem", textDecoration: "none", color: "#333" }}
-        >
+    <nav className="flex items-center justify-between p-4 bg-sky-300 border-b border-sky-700">
+      <div className="flex items-center">
+        <Link to="/bills" className="mr-5 font-bold text-xl text-white">
           My Bills
         </Link>
-        {/* <Link
-          to="/bills/add"
-          style={{ marginRight: "1rem", textDecoration: "none", color: "#333" }}
-        >
-          Add Bill
-        </Link> */}
         <button
           onClick={() => setShowUploader(true)}
           disabled={!isBillPage}
-          style={{
-            marginRight: "1rem",
-            cursor: isBillPage ? "pointer" : "not-allowed",
-            opacity: isBillPage ? 1 : 0.5,
-          }}
+          className="mr-4 px-4 py-2 font-bold bg-sky-100 hover:bg-sky-200 text-sky-800 rounded disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer
+"
         >
           Upload New Bill
         </button>
-        {showUploader && (
-          <div className="modal">
-            <UploadBillComponent
-              onClose={() => setShowUploader(false)}
-              onSuccess={(uploadData) => {
-                // Optionally use the uploadData, e.g. pre-fill new bill info
-                console.log("Upload successful:", uploadData);
-              }}
-            />
-          </div>
-        )}
       </div>
       <div>
         <button
           onClick={handleLogout}
-          style={{
-            padding: "0.5rem 1rem",
-            backgroundColor: "#e74c3c",
-            border: "none",
-            borderRadius: "4px",
-            color: "#fff",
-            cursor: "pointer",
-          }}
+          className="px-4 py-2 font-bold bg-gray-400 hover:bg-gray-600 text-white rounded cursor-pointer
+"
         >
           Logout
         </button>
       </div>
+
+      {showUploader && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <UploadBillComponent
+            onClose={() => setShowUploader(false)}
+            onSuccess={(uploadData) => {
+              console.log("Upload successful:", uploadData);
+            }}
+          />
+        </div>
+      )}
     </nav>
   );
 };

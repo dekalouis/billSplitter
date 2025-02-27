@@ -31,8 +31,8 @@ beforeAll(async () => {
       .set("Authorization", `Bearer ${validAccessToken}`)
       .send({
         billImageUrl: "http://test.com/bill.jpg",
-        vatRate: 0.11,
-        serviceChargeRate: 0.1,
+        vatAmount: 0.11,
+        serviceChargeAmt: 0.1,
       });
     testBillId = createBill.body.bill.id;
     const createItem = await request(app)
@@ -92,7 +92,6 @@ describe("POST /allocations", () => {
       .post("/allocations")
       .set("Authorization", `Bearer ${validAccessToken}`)
       .send({
-        allocatedQuantity: 1,
         ParticipantId: testParticipantId,
         ItemId: testItemId,
       });
@@ -107,7 +106,6 @@ describe("POST /allocations", () => {
       .post("/allocations")
       .set("Authorization", `Bearer ${validAccessToken}`)
       .send({
-        allocatedQuantity: 1,
         ParticipantId: testParticipantId,
         ItemId: 999999,
       });
@@ -117,7 +115,6 @@ describe("POST /allocations", () => {
 
   test("401 Fail - no token", async () => {
     const response = await request(app).post("/allocations").send({
-      allocatedQuantity: 1,
       ParticipantId: testParticipantId,
       ItemId: testItemId,
     });
@@ -159,41 +156,6 @@ describe("GET /allocations/participant/:participantId", () => {
     const response = await request(app).get(
       `/allocations/participant/${testParticipantId}`
     );
-    expect([401, 403]).toContain(response.status);
-  });
-});
-
-describe("PUT /allocations/:id", () => {
-  test("200 Success - update allocation", async () => {
-    const response = await request(app)
-      .put(`/allocations/${testAllocationId}`)
-      .set("Authorization", `Bearer ${validAccessToken}`)
-      .send({ allocatedQuantity: 2 });
-    if (response.status === 200) {
-      expect(response.body).toHaveProperty(
-        "message",
-        "Allocation updated successfully"
-      );
-    } else {
-      expect([401, 403, 404, 500]).toContain(response.status);
-    }
-  });
-
-  test("404 Fail - allocation not found", async () => {
-    const response = await request(app)
-      .put("/allocations/999999")
-      .set("Authorization", `Bearer ${validAccessToken}`)
-      .send({ allocatedQuantity: 2 });
-    expect([404, 500]).toContain(response.status);
-    expect(response.body).toHaveProperty("message", "Allocation not found");
-  });
-
-  test("401 Fail - no token", async () => {
-    const response = await request(app)
-      .put(`/allocations/${testAllocationId}`)
-      .send({
-        allocatedQuantity: 2,
-      });
     expect([401, 403]).toContain(response.status);
   });
 });

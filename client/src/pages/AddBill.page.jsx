@@ -110,130 +110,115 @@ const AddBillPage = () => {
   };
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h1>Add Bill</h1>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "1rem" }}>
-          <label>Bill Image URL:</label>
-          <input
-            type="text"
-            value={billImageUrl}
-            onChange={(e) => setBillImageUrl(e.target.value)}
-            readOnly
-            style={{ width: "100%", padding: "0.5rem" }}
-          />
-        </div>
-        <div style={{ marginBottom: "1rem" }}>
-          <label>Date:</label>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            style={{ width: "100%", padding: "0.5rem" }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "1rem" }}>
-          <label>VAT Amount:</label>
-          <input
-            type="number"
-            value={vatAmount}
-            onChange={(e) => setVatAmount(e.target.value)}
-            style={{ width: "100%", padding: "0.5rem" }}
-          />
-        </div>
-        <div style={{ marginBottom: "1rem" }}>
-          <label>Service Charge Amount:</label>
-          <input
-            type="number"
-            value={serviceChargeAmt}
-            onChange={(e) => setServiceChargeAmt(e.target.value)}
-            style={{ width: "100%", padding: "0.5rem" }}
-          />
-        </div>
-        <div style={{ marginBottom: "1rem" }}>
-          <h2>Items</h2>
-          {items.map((item, index) => (
-            <div
-              key={index}
-              style={{
-                border: "1px solid #ccc",
-                padding: "0.5rem",
-                marginBottom: "0.5rem",
-              }}
-            >
-              <div>
-                <label>Name:</label>
-                <input
-                  type="text"
-                  value={item.name}
-                  onChange={(e) =>
-                    handleItemChange(index, "name", e.target.value)
-                  }
-                  style={{ width: "100%", padding: "0.5rem" }}
-                />
-              </div>
-              <div>
-                <label>Quantity:</label>
-                <input
-                  type="number"
-                  value={item.quantity}
-                  onChange={(e) =>
-                    handleItemChange(index, "quantity", e.target.value)
-                  }
-                  style={{ width: "100%", padding: "0.5rem" }}
-                />
-              </div>
-              <div>
-                <label>Price:</label>
-                <input
-                  type="number"
-                  value={item.price}
-                  onChange={(e) =>
-                    handleItemChange(index, "price", e.target.value)
-                  }
-                  style={{ width: "100%", padding: "0.5rem" }}
-                />
-              </div>
-              <button
-                type="button"
-                onClick={() => removeItem(index)}
-                style={{
-                  marginTop: "0.5rem",
-                  backgroundColor: "#e74c3c",
-                  color: "#fff",
-                  border: "none",
-                  padding: "0.5rem 1rem",
-                  cursor: "pointer",
-                }}
+    <div className="min-h-screen flex items-center justify-center bg-sky-50 p-4">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+        <h1 className="text-2xl font-bold mb-6 text-center">Add Bill</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold">Bill Image URL:</label>
+            <input
+              type="text"
+              value={billImageUrl}
+              onChange={(e) => setBillImageUrl(e.target.value)}
+              readOnly
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold">Date:</label>
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold">VAT Amount:</label>
+            <input
+              type="number"
+              value={vatAmount}
+              onChange={(e) => setVatAmount(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold">
+              Service Charge Amount:
+            </label>
+            <input
+              type="number"
+              value={serviceChargeAmt}
+              onChange={(e) => setServiceChargeAmt(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-2">Items</h2>
+            {items.map((item, index) => (
+              <div
+                key={index}
+                className="border border-gray-300 p-3 mb-3 rounded"
               >
-                Remove Item
-              </button>
-            </div>
-          ))}
-
+                <div className="mb-2">
+                  <label className="block mb-1">Name:</label>
+                  <input
+                    type="text"
+                    value={item.name}
+                    onChange={(e) =>
+                      handleItemChange(index, "name", e.target.value)
+                    }
+                    className="w-full p-2 border border-gray-300 rounded"
+                  />
+                </div>
+                <div className="mb-2">
+                  <label className="block mb-1">Quantity:</label>
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) =>
+                      handleItemChange(index, "quantity", e.target.value)
+                    }
+                    className="w-full p-2 border border-gray-300 rounded"
+                  />
+                </div>
+                <div className="mb-2">
+                  <label className="block mb-1">Price:</label>
+                  <input
+                    type="number"
+                    value={item.price}
+                    onChange={(e) =>
+                      handleItemChange(index, "price", e.target.value)
+                    }
+                    className="w-full p-2 border border-gray-300 rounded"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeItem(index)}
+                  className="mt-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                >
+                  Remove Item
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addNewItem}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded"
+            >
+              Add Item
+            </button>
+          </div>
           <button
-            type="button"
-            onClick={addNewItem}
-            style={{
-              backgroundColor: "#3498db",
-              color: "#fff",
-              border: "none",
-              padding: "0.5rem 1rem",
-              cursor: "pointer",
-            }}
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-sky-400 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded"
           >
-            Add Item
+            Save Bill
           </button>
-        </div>
-        <button
-          type="submit"
-          style={{ padding: "0.5rem 1rem" }}
-          disabled={isSubmitting}
-        >
-          Save Bill
-        </button>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };

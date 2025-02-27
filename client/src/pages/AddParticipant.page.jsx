@@ -115,85 +115,75 @@ const AddParticipantsPage = () => {
   };
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h1>Add Participants</h1>
-      <form onSubmit={handleSubmit}>
-        {participants.map((participant, index) => (
-          <div
-            key={index}
-            style={{
-              border: "1px solid #ccc",
-              padding: "0.5rem",
-              marginBottom: "0.5rem",
-            }}
-          >
-            <div>
-              <label>Participant Name:</label>
-              <input
-                type="text"
-                value={participant.name}
-                onChange={(e) => handleNameChange(index, e.target.value)}
-                style={{ width: "100%", padding: "0.5rem" }}
-              />
-            </div>
-            <div>
-              <label>Assign Items:</label>
-              <div>
-                {createdItems && createdItems.length > 0 ? (
-                  createdItems.map((item) => (
-                    <label key={item.id} style={{ marginRight: "1rem" }}>
-                      <input
-                        type="checkbox"
-                        checked={participant.selectedItems.includes(item.id)}
-                        onChange={() => handleCheckboxChange(index, item.id)}
-                      />
-                      {item.name}
-                    </label>
-                  ))
-                ) : (
-                  <p>No items available for this bill.</p>
-                )}
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => removeParticipantRow(index)}
-              style={{
-                marginTop: "0.5rem",
-                backgroundColor: "#e74c3c",
-                color: "#fff",
-                border: "none",
-                padding: "0.5rem 1rem",
-                cursor: "pointer",
-              }}
+    <div className="min-h-screen flex items-center justify-center bg-sky-50 p-4">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+        <h1 className="text-2xl font-bold mb-6 text-center">
+          Add Participants
+        </h1>
+        <form onSubmit={handleSubmit}>
+          {participants.map((participant, index) => (
+            <div
+              key={index}
+              className="border border-gray-300 p-3 mb-4 rounded"
             >
-              Remove
-            </button>
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={addParticipantRow}
-          style={{
-            marginBottom: "1rem",
-            backgroundColor: "#3498db",
-            color: "#fff",
-            border: "none",
-            padding: "0.5rem 1rem",
-            cursor: "pointer",
-          }}
-        >
-          Add Participant
-        </button>
-        <br />
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          style={{ padding: "0.5rem 1rem" }}
-        >
-          Save Participants & Allocations
-        </button>
-      </form>
+              <div className="mb-3">
+                <label className="block mb-1 font-semibold">
+                  Participant Name:
+                </label>
+                <input
+                  type="text"
+                  value={participant.name}
+                  onChange={(e) => handleNameChange(index, e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-3">
+                <label className="block mb-1 font-semibold">
+                  Assign Items:
+                </label>
+                <div>
+                  {createdItems && createdItems.length > 0 ? (
+                    createdItems.map((item) => (
+                      <label key={item.id} className="mr-4">
+                        <input
+                          type="checkbox"
+                          checked={participant.selectedItems.includes(item.id)}
+                          onChange={() => handleCheckboxChange(index, item.id)}
+                          className="mr-1"
+                        />
+                        {item.name}
+                      </label>
+                    ))
+                  ) : (
+                    <p>No items available for this bill.</p>
+                  )}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => removeParticipantRow(index)}
+                className="mt-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={addParticipantRow}
+            className="mb-4 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded"
+          >
+            Add Participant
+          </button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-sky-400 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded"
+          >
+            Save Participants & Allocations
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
