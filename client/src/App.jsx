@@ -5,17 +5,19 @@ import { Provider } from "react-redux";
 import RegisterPage from "./pages/Register.page";
 import LoginPage from "./pages/Login.page";
 import AddBillPage from "./pages/AddBill.page";
-import UploadBillPage from "./pages/UploadBill.page";
+// import UploadBillPage from "./pages/UploadBill.page";
 import BillsPage from "./pages/Bills.page";
 import AddParticipantsPage from "./pages/AddParticipant.page";
-import AllocateItemsPage from "./pages/AllocateItems.page";
+// import AllocateItemsPage from "./pages/AllocateItems.page";
 import BillDetailPage from "./pages/BillDetail.page";
 import PrivateLayout from "./layouts/Private.layout";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
+        <ToastContainer position="top-right" autoClose={3000} />
         <Routes>
           {/* <Route path="/" element={<Navigate to="/bills/user/:userId" replace />} /> */}
 
@@ -35,16 +37,16 @@ function App() {
           <Route element={<PrivateLayout />}>
             <Route path="/bills" element={<BillsPage />} />
             <Route path="/bills/:id" element={<BillDetailPage />} />
-            <Route path="/bills/upload" element={<UploadBillPage />} />
+            {/* <Route path="/bills/upload" element={<UploadBillPage />} /> */}
             <Route path="/bills/add" element={<AddBillPage />} />
             <Route
               path="/bills/add-participants/:billId"
               element={<AddParticipantsPage />}
             />
-            <Route
+            {/* <Route
               path="/bills/allocate-items/:billId"
               element={<AllocateItemsPage />}
-            />
+            /> */}
           </Route>
 
           {/* 

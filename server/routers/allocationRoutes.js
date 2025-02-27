@@ -24,8 +24,8 @@ router.get(
   AllocationController.getAllocationsByParticipant
 );
 
-// update allocation
-router.put("/:id", authorizeAllocation, AllocationController.updateAllocation);
+// // update allocation
+// router.put("/:id", authorizeAllocation, AllocationController.updateAllocation);
 
 // del allocation
 router.delete(

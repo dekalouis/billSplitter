@@ -2,11 +2,13 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 const RegisterPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading } = useSelector((state) => state.user);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,10 +18,18 @@ const RegisterPage = () => {
     try {
       // dispatch dulu registerUser async thunk
       await dispatch(registerUser({ email, password })).unwrap();
+      toast.success("Registration successful!", {
+        position: "top-right",
+      });
 
       navigate("/users/login");
     } catch (err) {
       console.error("Registration failed:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: err.message,
+      });
     }
   };
 
@@ -35,7 +45,6 @@ const RegisterPage = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
-            required
             style={{ width: "100%", padding: "0.5rem" }}
           />
         </div>
@@ -47,7 +56,6 @@ const RegisterPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
-            required
             style={{ width: "100%", padding: "0.5rem" }}
           />
         </div>
@@ -58,7 +66,7 @@ const RegisterPage = () => {
         >
           {loading ? "Registering..." : "Register"}
         </button>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {/* {error && <p style={{ color: "red" }}>{error}</p>} */}
       </form>
     </div>
   );

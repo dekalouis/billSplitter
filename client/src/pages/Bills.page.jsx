@@ -1,75 +1,83 @@
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getBillsByUser } from "../features/bill/billSlice";
+import { getBillsByUser, deleteBill } from "../features/bill/billSlice";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const BillsPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { bills, loading, error } = useSelector((state) => state.bill);
-  // console.log("Bills from Redux:", bills);
 
   useEffect(() => {
     dispatch(getBillsByUser());
   }, [dispatch]);
 
   const calculateTotal = (bill) => {
-    if (!bill.Items || !Array.isArray(bill.Items)) return 0;
-    const itemTotal = bill.Items.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-    // console.log(itemTotal, `HARGA SEBELOM PAJAK`);
-    // console.log(bill.vatAmount, `HARGA  PAJAK`);
-    // console.log(bill.serviceChargeAmt, `HARGA  Servis`);
-    return itemTotal + bill.vatAmount + bill.serviceChargeAmt;
+    const itemsTotal =
+      bill.Items?.reduce((sum, item) => {
+        return sum + item.price;
+      }, 0) || 0;
+    return itemsTotal + bill.vatAmount + bill.serviceChargeAmt;
+  };
+
+  const handleRowClick = (billId) => {
+    navigate(`/bills/${billId}`);
+  };
+
+  const handleDelete = (e, billId) => {
+    //BIAR ROW ONCLICK GA TRIGGER SENDIRI PAKAUI INI
+    e.stopPropagation();
+    dispatch(deleteBill(billId));
   };
 
   return (
-    <div style={{ padding: "1rem" }}>
+    <div className="bills-page">
       <h1>Your Bills</h1>
       {loading && <p>Loading bills...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
+      {error && <p>Error: {error}</p>}
       {bills && bills.length > 0 ? (
-        <table
-          border="1"
-          cellPadding="10"
-          cellSpacing="0"
-          style={{ width: "100%", marginBottom: "1rem", textAlign: "left" }}
-        >
+        <table className="bills-table">
           <thead>
             <tr>
-              <th>Image</th>
-              <th>Date</th>
-              <th>Items</th>
-              <th>Participants</th>
-              <th style={{ textAlign: "right" }}>Total Amount</th>
+              <th>Bill Image</th>
+              <th>Created Date</th>
+              <th>Items Count</th>
+              <th>Participants Count</th>
+              <th>Total Amount</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
             {bills.map((bill) => (
-              <tr key={bill.id}>
+              <tr
+                key={bill.id}
+                onClick={() => handleRowClick(bill.id)}
+                style={{ cursor: "pointer" }}
+              >
                 <td>
-                  {bill.billImageUrl ? (
-                    <img
-                      src={bill.billImageUrl}
-                      alt="Bill"
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        objectFit: "cover",
-                      }}
-                    />
-                  ) : (
-                    "No Image"
-                  )}
+                  <img
+                    src={bill.billImageUrl}
+                    alt="Bill"
+                    style={{ width: "100px", height: "auto" }}
+                  />
                 </td>
                 <td>{new Date(bill.createdAt).toLocaleDateString()}</td>
                 <td>{bill.Items ? bill.Items.length : 0}</td>
                 <td>{bill.Participants ? bill.Participants.length : 0}</td>
-                <td style={{ textAlign: "right" }}>
-                  Rp. {calculateTotal(bill).toLocaleString()}
+                <td>{calculateTotal(bill)}</td>
+                <td>
+                  <button
+                    onClick={(e) => handleDelete(e, bill.id)}
+                    style={{
+                      backgroundColor: "#e74c3c",
+                      color: "#fff",
+                      border: "none",
+                      padding: "0.5rem 1rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
@@ -78,13 +86,6 @@ const BillsPage = () => {
       ) : (
         !loading && <p>No bills found.</p>
       )}
-
-      <button
-        onClick={() => navigate("/bills/upload")}
-        style={{ padding: "0.5rem 1rem" }}
-      >
-        Upload Bill
-      </button>
     </div>
   );
 };

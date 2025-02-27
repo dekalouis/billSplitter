@@ -2,11 +2,13 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading } = useSelector((state) => state.user);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,10 +23,18 @@ const LoginPage = () => {
 
       // const userId = ;
       // console.log(userId);
+      toast.success("Login successful!", {
+        position: "top-right",
+      });
 
       navigate(`/bills`);
     } catch (err) {
       console.error("Login failed:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: err.message,
+      });
     }
   };
 
@@ -38,7 +48,6 @@ const LoginPage = () => {
           <input
             type="email"
             placeholder="Enter your email"
-            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             style={{ width: "100%", padding: "0.5rem" }}
@@ -50,7 +59,6 @@ const LoginPage = () => {
           <input
             type="password"
             placeholder="Enter your password"
-            required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             style={{ width: "100%", padding: "0.5rem" }}
@@ -63,7 +71,7 @@ const LoginPage = () => {
         >
           {loading ? "Logging in..." : "Login"}
         </button>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {/* {error && <p style={{ color: "red" }}>{error}</p>} */}
       </form>
     </div>
   );

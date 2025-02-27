@@ -9,9 +9,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      allocatedQuantity: {
+      isAllocated: {
         allowNull: false,
-        type: Sequelize.DECIMAL,
+        type: Sequelize.BOOLEAN,
+        defaultValue: true,
       },
       ItemId: {
         type: Sequelize.INTEGER,

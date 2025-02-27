@@ -31,43 +31,7 @@ module.exports = (sequelize, DataTypes) => {
           // },
         },
       },
-      vatRate: {
-        type: DataTypes.DECIMAL(5, 2),
-        allowNull: false,
-        defaultValue: 0.0,
-        validate: {
-          min: {
-            args: [0],
-            msg: "VAT rate cannot be negative",
-          },
-          max: {
-            args: [100],
-            msg: "VAT rate cannot exceed 100%",
-          },
-          isDecimal: {
-            msg: "VAT rate must be a decimal",
-          },
-        },
-      },
 
-      serviceChargeRate: {
-        type: DataTypes.DECIMAL(5, 2),
-        allowNull: false,
-        defaultValue: 0.0,
-        validate: {
-          min: {
-            args: [0],
-            msg: "Service charge rate cannot be negative",
-          },
-          max: {
-            args: [100],
-            msg: "Service charge rate cannot exceed 100%",
-          },
-          isDecimal: {
-            msg: "Service charge rate must be a decimal",
-          },
-        },
-      },
       vatAmount: {
         type: DataTypes.INTEGER,
         allowNull: true,

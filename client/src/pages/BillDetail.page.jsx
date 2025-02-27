@@ -7,14 +7,7 @@ const BillDetailPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { currentBill, loading } = useSelector((state) => state.bill);
-  //   const [bill, setBill] = useState(null);
 
-  // Fetch all bills (which include full associations)
-  useEffect(() => {
-    dispatch(getBillById());
-  }, [dispatch]);
-
-  // Find the current bill using its id.
   useEffect(() => {
     if (id) {
       dispatch(getBillById(id));
@@ -24,66 +17,80 @@ const BillDetailPage = () => {
   if (loading) return <p>Loading bill details...</p>;
   if (!currentBill) return <p>No bill found.</p>;
 
-  // Use default empty arrays
   const items = currentBill.Items || currentBill.items || [];
   const participants =
     currentBill.Participants || currentBill.participants || [];
 
-  // Compute the cost each participant owes from item allocations.
-  // We assume that each item has an Allocations array with objects like:
-  // { ParticipantId, allocatedQuantity } where allocatedQuantity is a percentage (0–100)
-  const participantSubtotals = {};
-  //   let totalItemCost = 0;
+  const itemsWithParticipantNames = items.map((item) => {
+    const names = (item.Participants || []).map((p) => p.name).join(", ");
+
+    const pricePerUnit = item.quantity > 0 ? item.price / item.quantity : 0;
+
+    const itemTotal = item.price;
+    const sharePerParticipant =
+      item.Participants && item.Participants.length > 0
+        ? itemTotal / item.Participants.length
+        : 0;
+    return {
+      ...item,
+      participantNames: names,
+      pricePerUnit,
+      itemTotal,
+      sharePerParticipant,
+    };
+  });
+
+  const totalItemsCost = itemsWithParticipantNames.reduce(
+    (sum, item) => sum + item.itemTotal,
+    0
+  );
+
+  const extraCharges =
+    Number(currentBill.vatAmount) + Number(currentBill.serviceChargeAmt);
+
+  const totalParticipants = participants.length;
+
+  const participantPaymentMap = {};
+  participants.forEach((p) => {
+    participantPaymentMap[p.id] = { name: p.name, subtotal: 0 };
+  });
+
   items.forEach((item) => {
-    const itemTotal = item.price * item.quantity;
-    // totalItemCost += itemTotal;
-    if (item.Allocations && Array.isArray(item.Allocations)) {
-      item.Allocations.forEach((alloc) => {
-        const allocatedCost = (alloc.allocatedQuantity / 100) * itemTotal;
-        if (participantSubtotals[alloc.ParticipantId]) {
-          participantSubtotals[alloc.ParticipantId] += allocatedCost;
-        } else {
-          participantSubtotals[alloc.ParticipantId] = allocatedCost;
+    const itemTotal = item.price / item.quantity;
+    const numItemParticipants =
+      (item.Participants && item.Participants.length) || 0;
+    if (numItemParticipants > 0) {
+      const share = itemTotal / numItemParticipants;
+      item.Participants.forEach((p) => {
+        if (participantPaymentMap[p.id]) {
+          participantPaymentMap[p.id].subtotal += share;
         }
       });
     }
   });
 
-  // The extra charges (VAT + Service)
-  const extraCharges =
-    Number(currentBill.vatAmount) + Number(currentBill.serviceChargeAmt);
+  const extraPerParticipant =
+    totalParticipants > 0 ? extraCharges / totalParticipants : 0;
 
-  // Sum of all participant subtotals (ideally should equal totalItemCost)
-  const totalParticipantSubtotal = Object.values(participantSubtotals).reduce(
-    (sum, amt) => sum + amt,
-    0
-  );
-
-  // Compute final amounts for each participant.
-  const participantDetails = participants.map((p) => {
-    const subtotal = participantSubtotals[p.id] || 0;
-    const shareRatio =
-      totalParticipantSubtotal > 0 ? subtotal / totalParticipantSubtotal : 0;
-    const extra = shareRatio * extraCharges;
-    const finalAmount = subtotal + extra;
+  const participantDetails = Object.values(participantPaymentMap).map((p) => {
+    const finalAmount = p.subtotal + extraPerParticipant;
     return {
       ...p,
-      subtotal,
-      extra,
+      extra: extraPerParticipant,
       finalAmount,
-      extraPercentage: extraCharges > 0 ? (extra / extraCharges) * 100 : 0,
     };
   });
+
+  const billTotal = totalItemsCost + extraCharges;
 
   return (
     <div style={{ padding: "1rem" }}>
       <h1>Bill Details</h1>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        {/* Left column: Bill text details */}
         <div style={{ flex: 1 }}>
           <h2>Items</h2>
-          {items.length ? (
-            items.map((item) => (
+          {itemsWithParticipantNames.length ? (
+            itemsWithParticipantNames.map((item) => (
               <div
                 key={item.id}
                 style={{
@@ -94,29 +101,14 @@ const BillDetailPage = () => {
               >
                 <p>
                   <strong>{item.name}</strong> (x{item.quantity}) @ Rp.
-                  {item.price} each
+                  {item.pricePerUnit.toFixed(2)} each
                 </p>
                 <p>
-                  <em>Item Total: Rp. {item.price * item.quantity}</em>
+                  <em>Item Total: Rp. {item.itemTotal}</em>
                 </p>
-                <div>
-                  <h4>Allocations:</h4>
-                  {item.Allocations && item.Allocations.length ? (
-                    item.Allocations.map((alloc) => {
-                      const participant = participants.find(
-                        (p) => p.id === alloc.ParticipantId
-                      );
-                      return (
-                        <p key={alloc.ParticipantId}>
-                          {participant ? participant.name : "Unknown"}:{" "}
-                          {alloc.allocatedQuantity}%
-                        </p>
-                      );
-                    })
-                  ) : (
-                    <p>No allocations for this item.</p>
-                  )}
-                </div>
+                <p>
+                  <strong>Participants:</strong> {item.participantNames}
+                </p>
               </div>
             ))
           ) : (
@@ -129,10 +121,10 @@ const BillDetailPage = () => {
             <strong>Service Charge:</strong> Rp. {currentBill.serviceChargeAmt}
           </p>
           <p>
-            <strong>Total Price:</strong> Rp. {currentBill.totalPayment}
+            <strong>Total Price:</strong> Rp. {billTotal}
           </p>
         </div>
-        {/* Right column: currentBill photo */}
+
         <div style={{ marginLeft: "2rem" }}>
           {currentBill.billImageUrl ? (
             <img
@@ -145,7 +137,7 @@ const BillDetailPage = () => {
           )}
         </div>
       </div>
-      {/* Bottom: Participant payment breakdown */}
+      {/* Bottom: Participant Payment Breakdown */}
       <div style={{ marginTop: "2rem" }}>
         <h2>Participant Payment Details</h2>
         {participantDetails.map((p) => (
@@ -160,11 +152,8 @@ const BillDetailPage = () => {
             <p>
               <strong>{p.name}</strong>
             </p>
-            <p>Subtotal: Rp. {p.subtotal.toFixed(2)}</p>
-            <p>
-              VAT/Service Share: Rp. {p.extra.toFixed(2)} (
-              {p.extraPercentage.toFixed(2)}%)
-            </p>
+            <p>Subtotal from items: Rp. {p.subtotal.toFixed(2)}</p>
+            <p>Extra charges (VAT/Service share): Rp. {p.extra.toFixed(2)}</p>
             <p>
               <strong>Total Due: Rp. {p.finalAmount.toFixed(2)}</strong>
             </p>

@@ -12,20 +12,10 @@ module.exports = {
       billImageUrl: {
         type: Sequelize.STRING,
       },
-      vatRate: {
-        allowNull: false,
-        type: Sequelize.DECIMAL,
-      },
-      serviceChargeRate: {
-        allowNull: false,
-        type: Sequelize.DECIMAL,
-      },
       vatAmount: {
-        allowNull: false,
         type: Sequelize.INTEGER,
       },
       serviceChargeAmt: {
-        allowNull: false,
         type: Sequelize.INTEGER,
       },
       createdBy: {

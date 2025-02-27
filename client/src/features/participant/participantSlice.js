@@ -46,6 +46,7 @@ const participantSlice = createSlice({
       .addCase(createParticipant.fulfilled, (state, action) => {
         state.loading = false;
         state.participants.push(action.payload); // Ensure new participants are added
+        // console.log(action.payload, `-----`, "PAYLOADNYA");
       })
       .addCase(createParticipant.rejected, (state, action) => {
         state.loading = false;
