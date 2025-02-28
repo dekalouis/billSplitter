@@ -12,6 +12,7 @@ import AddParticipantsPage from "./pages/AddParticipant.page";
 import BillDetailPage from "./pages/BillDetail.page";
 import PrivateLayout from "./layouts/Private.layout";
 import { ToastContainer } from "react-toastify";
+import PublicLayout from "./layouts/Public.layout";
 
 function App() {
   return (
@@ -21,12 +22,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/users/login" replace />} />
 
-          <Route path="/" element={<h1>landing</h1>} />
-          {/* <Route path="/" element={<h1>landing</h1>} /> */}
           {/* user */}
-          <Route path="/users/register" element={<RegisterPage />} />
-          <Route path="/users/login" element={<LoginPage />} />
-          <Route path="/users/:id" element={<h1>ProfilePage</h1>} />
+          <Route element={<PublicLayout />}>
+            <Route path="/users/register" element={<RegisterPage />} />
+            <Route path="/users/login" element={<LoginPage />} />
+          </Route>
 
           {/* bill */}
           {/* <Route path="/bills/add-bill" element={<h1>Addbill</h1>} />
