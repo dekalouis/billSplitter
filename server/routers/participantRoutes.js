@@ -11,14 +11,14 @@ router.use(authentication);
 router.post("/", ParticipantController.createParticipant);
 
 // participants by bill
-router.get("/bill/:billId", ParticipantController.getParticipantsByBill);
+// router.get("/bill/:billId", ParticipantController.getParticipantsByBill);
 
-// update participant
-router.put(
-  "/:id",
-  authorizeParticipant,
-  ParticipantController.updateParticipant
-);
+// // update participant
+// router.put(
+//   "/:id",
+//   authorizeParticipant,
+//   ParticipantController.updateParticipant
+// );
 
 // delete participant
 router.delete(

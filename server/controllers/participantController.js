@@ -12,75 +12,75 @@ class ParticipantController {
       next(err);
     }
   }
-  static async getParticipantsByBill(req, res, next) {
-    try {
-      const { billId } = req.params;
+  // static async getParticipantsByBill(req, res, next) {
+  //   try {
+  //     const { billId } = req.params;
 
-      //authorization terpisah
-      const userId = req.user.id;
-      console.log(`ID billnya`, billId, `ID user`, userId);
-      const bill = await Bill.findOne({
-        where: { id: billId, createdBy: userId },
-      });
-      if (!bill) {
-        next({
-          name: "Forbidden",
-          message: "You cannot access other user's bills",
-        });
-        return;
-      }
-      //authorization terpisah
+  //     //authorization terpisah
+  //     const userId = req.user.id;
+  //     console.log(`ID billnya`, billId, `ID user`, userId);
+  //     const bill = await Bill.findOne({
+  //       where: { id: billId, createdBy: userId },
+  //     });
+  //     if (!bill) {
+  //       next({
+  //         name: "Forbidden",
+  //         message: "You cannot access other user's bills",
+  //       });
+  //       return;
+  //     }
+  //     //authorization terpisah
 
-      const participants = await Participant.findAll({
-        where: { BillId: billId },
-      });
+  //     const participants = await Participant.findAll({
+  //       where: { BillId: billId },
+  //     });
 
-      if (!participants) {
-        next({ name: "NotFound", message: "Participant not found" });
-        return;
-      }
+  //     if (!participants) {
+  //       next({ name: "NotFound", message: "Participant not found" });
+  //       return;
+  //     }
 
-      return res.json(participants);
-    } catch (err) {
-      next(err);
-    }
-  }
-  static async updateParticipant(req, res, next) {
-    try {
-      const { id } = req.params;
-      const { name } = req.body;
-      //   const userId = req.user.id;
+  //     return res.json(participants);
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // }
+  // static async updateParticipant(req, res, next) {
+  //   try {
+  //     const { id } = req.params;
+  //     const { name } = req.body;
+  //     //   const userId = req.user.id;
 
-      //   const participant = await Participant.findOne({ where: { id } });
-      //   if (!participant) {
-      //     next({ name: "NotFound", message: "Participant not found" });
-      //     return;
-      //   }
+  //     //   const participant = await Participant.findOne({ where: { id } });
+  //     //   if (!participant) {
+  //     //     next({ name: "NotFound", message: "Participant not found" });
+  //     //     return;
+  //     //   }
 
-      //   const bill = await Bill.findOne({
-      //     where: { id: participant.BillId, createdBy: userId },
-      //   });
-      //   if (!bill) {
-      //     next({
-      //       name: "Forbidden",
-      //       message: "You cannot update participants in other user's bills",
-      //     });
-      //     return;
-      //   }
-      const [updated] = await Participant.update({ name }, { where: { id } });
-      if (!id) {
-        next({ name: "NotFound", message: "Participant not found" });
-        return;
-      }
-      if (!updated) {
-        next({ name: "BadRequest", message: "Update failed" });
-        return;
-      }
-      return res.json({ message: "Participant updated successfully" });
-    } catch (err) {
-      next(err);
-    }
-  }
+  //     //   const bill = await Bill.findOne({
+  //     //     where: { id: participant.BillId, createdBy: userId },
+  //     //   });
+  //     //   if (!bill) {
+  //     //     next({
+  //     //       name: "Forbidden",
+  //     //       message: "You cannot update participants in other user's bills",
+  //     //     });
+  //     //     return;
+  //     //   }
+  //     const [updated] = await Participant.update({ name }, { where: { id } });
+  //     if (!id) {
+  //       next({ name: "NotFound", message: "Participant not found" });
+  //       return;
+  //     }
+  //     if (!updated) {
+  //       next({ name: "BadRequest", message: "Update failed" });
+  //       return;
+  //     }
+  //     return res.json({ message: "Participant updated successfully" });
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // }
   static async deleteParticipant(req, res, next) {
     try {
       const { id } = req.params;

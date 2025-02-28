@@ -11,18 +11,18 @@ router.use(authentication);
 router.post("/", AllocationController.createAllocation);
 
 // get allocations by item
-router.get(
-  "/item/:itemId",
+// router.get(
+//   "/item/:itemId",
 
-  AllocationController.getAllocationsByItem
-);
+//   AllocationController.getAllocationsByItem
+// );
 
-// get allocations by participant
-router.get(
-  "/participant/:participantId",
+// // get allocations by participant
+// router.get(
+//   "/participant/:participantId",
 
-  AllocationController.getAllocationsByParticipant
-);
+//   AllocationController.getAllocationsByParticipant
+// );
 
 // // update allocation
 // router.put("/:id", authorizeAllocation, AllocationController.updateAllocation);

@@ -122,43 +122,43 @@ describe("POST /allocations", () => {
   });
 });
 
-describe("GET /allocations/item/:itemId", () => {
-  test("200 Success - get allocations by item", async () => {
-    const response = await request(app)
-      .get(`/allocations/item/${testItemId}`)
-      .set("Authorization", `Bearer ${validAccessToken}`);
-    if (response.status === 200) {
-      expect(Array.isArray(response.body)).toBe(true);
-    } else {
-      expect([401, 403, 404, 500]).toContain(response.status);
-    }
-  });
+// describe("GET /allocations/item/:itemId", () => {
+//   test("200 Success - get allocations by item", async () => {
+//     const response = await request(app)
+//       .get(`/allocations/item/${testItemId}`)
+//       .set("Authorization", `Bearer ${validAccessToken}`);
+//     if (response.status === 200) {
+//       expect(Array.isArray(response.body)).toBe(true);
+//     } else {
+//       expect([401, 403, 404, 500]).toContain(response.status);
+//     }
+//   });
 
-  test("401 Fail - no token", async () => {
-    const response = await request(app).get(`/allocations/item/${testItemId}`);
-    expect([401, 403]).toContain(response.status);
-  });
-});
+//   test("401 Fail - no token", async () => {
+//     const response = await request(app).get(`/allocations/item/${testItemId}`);
+//     expect([401, 403]).toContain(response.status);
+//   });
+// });
 
-describe("GET /allocations/participant/:participantId", () => {
-  test("200 Success - get allocations by participant", async () => {
-    const response = await request(app)
-      .get(`/allocations/participant/${testParticipantId}`)
-      .set("Authorization", `Bearer ${validAccessToken}`);
-    if (response.status === 200) {
-      expect(Array.isArray(response.body)).toBe(true);
-    } else {
-      expect([401, 403, 404, 500]).toContain(response.status);
-    }
-  });
+// describe("GET /allocations/participant/:participantId", () => {
+//   test("200 Success - get allocations by participant", async () => {
+//     const response = await request(app)
+//       .get(`/allocations/participant/${testParticipantId}`)
+//       .set("Authorization", `Bearer ${validAccessToken}`);
+//     if (response.status === 200) {
+//       expect(Array.isArray(response.body)).toBe(true);
+//     } else {
+//       expect([401, 403, 404, 500]).toContain(response.status);
+//     }
+//   });
 
-  test("401 Fail - no token", async () => {
-    const response = await request(app).get(
-      `/allocations/participant/${testParticipantId}`
-    );
-    expect([401, 403]).toContain(response.status);
-  });
-});
+//   test("401 Fail - no token", async () => {
+//     const response = await request(app).get(
+//       `/allocations/participant/${testParticipantId}`
+//     );
+//     expect([401, 403]).toContain(response.status);
+//   });
+// });
 
 describe("DELETE /allocations/:id", () => {
   test("200 Success - delete allocation", async () => {
@@ -188,5 +188,127 @@ describe("DELETE /allocations/:id", () => {
       `/allocations/${testAllocationId}`
     );
     expect([401, 403]).toContain(response.status);
+  });
+});
+
+//======== BARUUUU
+describe("POST /allocations - additional error cases", () => {
+  test("404 Fail - participant not found", async () => {
+    const response = await request(app)
+      .post("/allocations")
+      .set("Authorization", `Bearer ${validAccessToken}`)
+      .send({
+        ParticipantId: 999999,
+        ItemId: testItemId,
+      });
+    expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty("message", "Participant not found");
+  });
+
+  test("400 Fail - item and participant must belong to the same bill", async () => {
+    const createBill2 = await request(app)
+      .post("/bills/add-bill")
+      .set("Authorization", `Bearer ${validAccessToken}`)
+      .send({
+        billImageUrl: "http://test.com/bill2.jpg",
+        vatAmount: 0.11,
+        serviceChargeAmt: 0.1,
+      });
+    const bill2Id = createBill2.body.bill.id;
+
+    const createParticipant2 = await request(app)
+      .post("/participants")
+      .set("Authorization", `Bearer ${validAccessToken}`)
+      .send({
+        name: "Test Participant 2",
+        BillId: bill2Id,
+      });
+    const participant2Id = createParticipant2.body.participant.id;
+
+    const response = await request(app)
+      .post("/allocations")
+      .set("Authorization", `Bearer ${validAccessToken}`)
+      .send({
+        ParticipantId: participant2Id,
+        ItemId: testItemId,
+      });
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty(
+      "message",
+      "Item and Participant must belong to the same bill"
+    );
+  });
+});
+// ======== ERROR HANDLING FOR ALLOCATION CONTROLLER ========
+
+const { ItemAllocation } = require("../models");
+
+describe("Error handling in AllocationController endpoints", () => {
+  describe("POST /allocations error", () => {
+    test("500 Internal Server Error - createAllocation throws error", async () => {
+      jest
+        .spyOn(ItemAllocation, "create")
+        .mockRejectedValue(new Error("Test create error"));
+
+      const response = await request(app)
+        .post("/allocations")
+        .set("Authorization", `Bearer ${validAccessToken}`)
+        .send({
+          ParticipantId: testParticipantId,
+          ItemId: testItemId,
+        });
+
+      expect(response.status).toBe(500);
+      expect(response.body).toHaveProperty("message", "Internal Server Error.");
+      ItemAllocation.create.mockRestore();
+    });
+  });
+
+  // describe("GET /allocations/item/:itemId error", () => {
+  //   test("500 Internal Server Error - getAllocationsByItem throws error", async () => {
+  //     jest
+  //       .spyOn(ItemAllocation, "findAll")
+  //       .mockRejectedValue(new Error("Test getAllocationsByItem error"));
+
+  //     const response = await request(app)
+  //       .get(`/allocations/item/${testItemId}`)
+  //       .set("Authorization", `Bearer ${validAccessToken}`);
+
+  //     expect(response.status).toBe(500);
+  //     expect(response.body).toHaveProperty("message", "Internal Server Error.");
+  //     ItemAllocation.findAll.mockRestore();
+  //   });
+  // });
+
+  // describe("GET /allocations/participant/:participantId error", () => {
+  //   test("500 Internal Server Error - getAllocationsByParticipant throws error", async () => {
+  //     jest
+  //       .spyOn(ItemAllocation, "findAll")
+  //       .mockRejectedValue(new Error("Test getAllocationsByParticipant error"));
+
+  //     const response = await request(app)
+  //       .get(`/allocations/participant/${testParticipantId}`)
+  //       .set("Authorization", `Bearer ${validAccessToken}`);
+
+  //     expect(response.status).toBe(500);
+  //     expect(response.body).toHaveProperty("message", "Internal Server Error.");
+  //     ItemAllocation.findAll.mockRestore();
+  //   });
+  // });
+
+  describe("DELETE /allocations/:id error", () => {
+    test("500 Internal Server Error - deleteAllocation throws error", async () => {
+      jest
+        .spyOn(ItemAllocation, "destroy")
+        .mockRejectedValue(new Error("Test delete error"));
+
+      const response = await request(app)
+        .delete(`/allocations/${testAllocationId}`)
+        .set("Authorization", `Bearer ${validAccessToken}`);
+
+      expect(response.status).toBe(500);
+      expect(response.body).toHaveProperty("message", "Internal Server Error.");
+      ItemAllocation.destroy.mockRestore();
+    });
   });
 });

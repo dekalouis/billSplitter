@@ -15,6 +15,6 @@ router.post("/login", UserController.login);
 router.post("/login/google", UserController.googleLogin);
 
 // getuser?
-router.get("/:id", authentication, UserController.getUserById);
+// router.get("/:id", authentication, UserController.getUserById);
 
 module.exports = router;

@@ -135,48 +135,48 @@ describe("POST /users/login", () => {
 });
 
 // ==================== GET USER BY ID TESTS ====================
-describe("GET /users/:id", () => {
-  test("200 Success - get user data with token and correct user ID", async () => {
-    const response = await request(app)
-      .get(`/users/${testUserId}`)
-      .set("Authorization", `Bearer ${validAccessToken}`);
+// describe("GET /users/:id", () => {
+//   test("200 Success - get user data with token and correct user ID", async () => {
+//     const response = await request(app)
+//       .get(`/users/${testUserId}`)
+//       .set("Authorization", `Bearer ${validAccessToken}`);
 
-    if (response.status === 200) {
-      expect(response.body).toHaveProperty("id", testUserId);
-      expect(response.body).toHaveProperty("email", "testregister@test.com");
-    } else {
-      expect([403, 404]).toContain(response.status);
-    }
-  });
+//     if (response.status === 200) {
+//       expect(response.body).toHaveProperty("id", testUserId);
+//       expect(response.body).toHaveProperty("email", "testregister@test.com");
+//     } else {
+//       expect([403, 404]).toContain(response.status);
+//     }
+//   });
 
-  test("403 Forbidden - try to access another users data", async () => {
-    const response = await request(app)
-      .get(`/users/9999`)
-      .set("Authorization", `Bearer ${validAccessToken}`);
+//   test("403 Forbidden - try to access another users data", async () => {
+//     const response = await request(app)
+//       .get(`/users/9999`)
+//       .set("Authorization", `Bearer ${validAccessToken}`);
 
-    expect(response.status).toBe(403);
-    expect(response.body).toHaveProperty(
-      "message",
-      "You cannot access other user's data"
-    );
-  });
+//     expect(response.status).toBe(403);
+//     expect(response.body).toHaveProperty(
+//       "message",
+//       "You cannot access other user's data"
+//     );
+//   });
 
-  test("401 Unauthorized - no access token", async () => {
-    const response = await request(app).get(`/users/${testUserId}`);
+//   test("401 Unauthorized - no access token", async () => {
+//     const response = await request(app).get(`/users/${testUserId}`);
 
-    expect([401, 403]).toContain(response.status);
-    expect(response.body).toHaveProperty("message", expect.any(String));
-  });
+//     expect([401, 403]).toContain(response.status);
+//     expect(response.body).toHaveProperty("message", expect.any(String));
+//   });
 
-  test("404 Not Found - user doesn't exist in DB", async () => {
-    const response = await request(app)
-      .get("/users/12345678")
-      .set("Authorization", `Bearer ${validAccessToken}`);
+//   test("404 Not Found - user doesn't exist in DB", async () => {
+//     const response = await request(app)
+//       .get("/users/12345678")
+//       .set("Authorization", `Bearer ${validAccessToken}`);
 
-    if (response.status === 404) {
-      expect(response.body).toHaveProperty("message", "User not found");
-    } else {
-      expect([403, 404]).toContain(response.status);
-    }
-  });
-});
+//     if (response.status === 404) {
+//       expect(response.body).toHaveProperty("message", "User not found");
+//     } else {
+//       expect([403, 404]).toContain(response.status);
+//     }
+//   });
+// });

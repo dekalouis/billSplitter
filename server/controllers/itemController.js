@@ -10,77 +10,77 @@ class ItemController {
       next(err);
     }
   }
-  static async getItemsByBill(req, res, next) {
-    try {
-      const { billId } = req.params;
+  // static async getItemsByBill(req, res, next) {
+  //   try {
+  //     const { billId } = req.params;
 
-      //authorization terpisah
-      const userId = req.user.id;
-      const bill = await Bill.findOne({
-        where: { id: billId, createdBy: userId },
-      });
-      if (!bill) {
-        next({
-          name: "Forbidden",
-          message: "You cannot access other user's bills",
-        });
-        return;
-      }
-      //authorization terpisah
+  //     //authorization terpisah
+  //     const userId = req.user.id;
+  //     const bill = await Bill.findOne({
+  //       where: { id: billId, createdBy: userId },
+  //     });
+  //     if (!bill) {
+  //       next({
+  //         name: "Forbidden",
+  //         message: "You cannot access other user's bills",
+  //       });
+  //       return;
+  //     }
+  //     //authorization terpisah
 
-      const items = await Item.findAll({ where: { BillId: billId } });
+  //     const items = await Item.findAll({ where: { BillId: billId } });
 
-      if (!items) {
-        next({ name: "NotFound", message: "Item not found" });
-        return;
-      }
+  //     if (!items) {
+  //       next({ name: "NotFound", message: "Item not found" });
+  //       return;
+  //     }
 
-      return res.json(items);
-    } catch (err) {
-      next(err);
-    }
-  }
-  static async updateItem(req, res, next) {
-    try {
-      const { id } = req.params;
-      const { name, quantity, price } = req.body;
-      //   const userId = req.user.id;
+  //     return res.json(items);
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // }
+  // static async updateItem(req, res, next) {
+  //   try {
+  //     const { id } = req.params;
+  //     const { name, quantity, price } = req.body;
+  //     //   const userId = req.user.id;
 
-      const item = await Item.findOne({ where: { id } });
-      if (!item) {
-        next({ name: "NotFound", message: "Item not found" });
-        return;
-      }
+  //     const item = await Item.findOne({ where: { id } });
+  //     if (!item) {
+  //       next({ name: "NotFound", message: "Item not found" });
+  //       return;
+  //     }
 
-      //CHECK BILLNYA PUNYA SIAPA
-      //   const bill = await Bill.findOne({
-      //     where: { id: item.BillId, createdBy: userId },
-      //   });
-      //   if (!bill) {
-      //     next({
-      //       name: "Forbidden",
-      //       message: "You cannot update items in other user's bills",
-      //     });
-      //     return;
-      //   }
+  //     //CHECK BILLNYA PUNYA SIAPA
+  //     //   const bill = await Bill.findOne({
+  //     //     where: { id: item.BillId, createdBy: userId },
+  //     //   });
+  //     //   if (!bill) {
+  //     //     next({
+  //     //       name: "Forbidden",
+  //     //       message: "You cannot update items in other user's bills",
+  //     //     });
+  //     //     return;
+  //     //   }
 
-      const [updated] = await Item.update(
-        { name, quantity, price },
-        { where: { id } }
-      );
-      if (!id) {
-        next({ name: "NotFound", message: "Item not found" });
-        return;
-      }
-      if (!updated) {
-        next({ name: "NotFound", message: "Item unchanged" });
-        return;
-      }
-      return res.json({ message: "Item updated successfully" });
-    } catch (err) {
-      next(err);
-    }
-  }
+  //     const [updated] = await Item.update(
+  //       { name, quantity, price },
+  //       { where: { id } }
+  //     );
+  //     if (!id) {
+  //       next({ name: "NotFound", message: "Item not found" });
+  //       return;
+  //     }
+  //     if (!updated) {
+  //       next({ name: "NotFound", message: "Item unchanged" });
+  //       return;
+  //     }
+  //     return res.json({ message: "Item updated successfully" });
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // }
   static async deleteItem(req, res, next) {
     try {
       const { id } = req.params;

@@ -43,31 +43,31 @@ class AllocationController {
     }
   }
 
-  static async getAllocationsByItem(req, res, next) {
-    try {
-      const { itemId } = req.params;
-      const allocations = await ItemAllocation.findAll({
-        where: { ItemId: itemId },
-        include: [{ model: Item }, { model: Participant }],
-      });
-      return res.json(allocations);
-    } catch (err) {
-      next(err);
-    }
-  }
+  // static async getAllocationsByItem(req, res, next) {
+  //   try {
+  //     const { itemId } = req.params;
+  //     const allocations = await ItemAllocation.findAll({
+  //       where: { ItemId: itemId },
+  //       include: [{ model: Item }, { model: Participant }],
+  //     });
+  //     return res.json(allocations);
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // }
 
-  static async getAllocationsByParticipant(req, res, next) {
-    try {
-      const { participantId } = req.params;
-      const allocations = await ItemAllocation.findAll({
-        where: { ParticipantId: participantId },
-        include: [{ model: Item }, { model: Participant }],
-      });
-      return res.json(allocations);
-    } catch (err) {
-      next(err);
-    }
-  }
+  // static async getAllocationsByParticipant(req, res, next) {
+  //   try {
+  //     const { participantId } = req.params;
+  //     const allocations = await ItemAllocation.findAll({
+  //       where: { ParticipantId: participantId },
+  //       include: [{ model: Item }, { model: Participant }],
+  //     });
+  //     return res.json(allocations);
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // }
 
   // static async updateAllocation(req, res, next) {
   //   try {

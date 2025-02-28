@@ -11,10 +11,10 @@ router.use(authentication);
 router.post("/", ItemController.createItem);
 
 //get item dari billnya
-router.get("/bill/:billId", ItemController.getItemsByBill);
+// router.get("/bill/:billId", ItemController.getItemsByBill);
 
 //update item
-router.put("/:id", authorizeItem, ItemController.updateItem);
+// router.put("/:id", authorizeItem, ItemController.updateItem);
 
 //delete bill
 router.delete("/:id", authorizeItem, ItemController.deleteItem);
